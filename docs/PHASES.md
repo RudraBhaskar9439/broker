@@ -11,7 +11,7 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 | 4   | `planner` (goal → plan; rule + Grok/LLM)           | `pnpm plan "<goal>"` valid plan                    | ✅      |
 | 5   | `orchestrator` + `receipts`                        | `pnpm run:goal "<goal>"` answer + receipt trail    | ✅      |
 | 6   | Provider (in-house worker Maestro hires)           | `pnpm worker` accepts + delivers; Maestro hires it | ✅ LIVE |
-| 7   | Demo surface (CLI / dashboard)                     | recorded ≤5-min run                                | ⬜      |
+| 7   | Demo surface + live discovery                      | `pnpm discover` + presentation page                | ✅      |
 | 8   | Package & submit                                   | submission checklist green                         | ⬜      |
 
 ## Proof log

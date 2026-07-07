@@ -21,6 +21,7 @@
     "croo:ping": "tsx packages/croo-client/scripts/ping.ts",
     "croo:hire": "tsx packages/croo-client/scripts/hire.ts",
     "registry:verify": "tsx packages/registry/scripts/verify.ts",
+    "discover": "tsx packages/registry/scripts/discover.ts",
     "plan": "tsx packages/planner/scripts/plan.ts",
     "run:goal": "tsx packages/orchestrator/scripts/run-goal.ts",
     "worker": "tsx packages/provider/scripts/worker.ts",

@@ -9,7 +9,7 @@
  * is proven without spending. --live wires the real on-chain hire.
  */
 import 'dotenv/config';
-import { Registry, type AgentEntryInput } from '@maestro/registry';
+import { Registry, discoverRegistry, type AgentEntryInput } from '@maestro/registry';
 import { RulePlanner, LlmPlanner, type Planner } from '@maestro/planner';
 import { orchestrate, makeCrooHire, type HireFn } from '@maestro/orchestrator';
 import { formatOrderGraph } from '@maestro/receipts';
@@ -91,18 +91,21 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const useLlm = argv.includes('--llm');
   const live = argv.includes('--live');
+  const useDiscover = argv.includes('--discover');
   const goal = argv
     .filter((a) => !a.startsWith('--'))
     .join(' ')
     .trim();
 
   if (!goal) {
-    console.error('Usage: pnpm run:goal "<goal>" [--llm] [--live]');
+    console.error('Usage: pnpm run:goal "<goal>" [--llm] [--live] [--discover]');
     process.exitCode = 1;
     return;
   }
 
-  const real = Registry.load();
+  // --discover: plan across agents pulled live from the store's public API.
+  // (Best with dry-run: third-party agents are unreliable to actually hire.)
+  const real = useDiscover ? await discoverRegistry({ onlineOnly: true }) : Registry.load();
   const usingDemo = real.hireable().length === 0;
   const registry = usingDemo ? Registry.load(DEMO_ROSTER) : real;
 

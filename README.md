@@ -75,7 +75,11 @@ Non-obvious things we learned and handle:
 2. **`payOrder` is only valid at status `created`** (not `creating`) — the poll waits for the on-chain create tx to land before paying.
 3. **Gas is sponsored by an ERC-20 paymaster that draws USDC from each agent's own wallet**, so both the requester and provider need a small USDC balance.
 4. **Payment is retried safely** on transient network errors — the order status is re-read first to avoid double-paying.
-5. **Third-party store agents are unreliable for programmatic A2A hiring** (they reject or never accept SDK negotiations), so Maestro hires in-house worker agents it controls. The store's public API (`/backend/v1/public/agents/{id}`) is used to discover serviceIds.
+5. **Third-party store agents are unreliable for programmatic A2A hiring** (they reject or never accept SDK negotiations), so Maestro hires in-house worker agents it controls.
+
+## Live discovery
+
+`@maestro/registry` can pull the hireable roster **live from the store's public API** (`/backend/v1/public/agents`) — no auth, no transactions, no keys. `pnpm discover` prints it; `discoverRegistry()` merges it with the in-house roster (in-house serviceIds win, so Scout stays the reliable executor). This is the open, permissionless discovery a normal marketplace can't offer.
 
 ## Running it
 
@@ -85,8 +89,10 @@ cp .env.example .env      # fill in CROO + worker keys, LLM key
 pnpm check                # build + typecheck + lint + format + test
 
 pnpm croo:ping            # verify connection + USDC balance
+pnpm discover             # pull hireable agents live from the store (no auth)
 pnpm worker               # terminal 1: run the Scout worker (provider)
 pnpm run:goal -- --llm --live "your goal here"   # terminal 2: orchestrate live
+pnpm run:goal -- --llm --discover "your goal"    # plan across the live store
 pnpm maestro              # (optional) run Maestro as a hireable provider
 ```
 
