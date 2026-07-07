@@ -19,7 +19,8 @@
     "format:fix": "prettier --write .",
     "check": "pnpm build && pnpm typecheck && pnpm lint && pnpm format && pnpm test",
     "croo:ping": "tsx packages/croo-client/scripts/ping.ts",
-    "croo:hire": "tsx packages/croo-client/scripts/hire.ts"
+    "croo:hire": "tsx packages/croo-client/scripts/hire.ts",
+    "registry:verify": "tsx packages/registry/scripts/verify.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

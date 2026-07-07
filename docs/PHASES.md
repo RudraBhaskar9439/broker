@@ -7,7 +7,7 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 | 0   | Foundation (monorepo, tooling, `config`, `logger`) | `pnpm check` all green                            | ✅      |
 | 1   | `croo-client` (typed SDK wrapper, WS, events)      | `pnpm croo:ping` prints wallet + USDC balance     | ✅      |
 | 2   | First real A2A hire                                | `pnpm croo:hire` returns result + on-chain txHash | 🟡 code |
-| 3   | `registry` (curated agent roster)                  | `pnpm registry:verify` all live                   | ⬜      |
+| 3   | `registry` (curated agent roster)                  | `pnpm registry:verify` validates roster           | ✅      |
 | 4   | `planner` (Claude goal → plan)                     | `pnpm plan "<goal>"` valid plan                   | ⬜      |
 | 5   | `orchestrator` + `receipts`                        | `pnpm run:goal "<goal>"` answer + receipt trail   | ⬜      |
 | 6   | Maestro provider + in-house specialists            | external requester hires Maestro                  | ⬜      |
@@ -46,4 +46,18 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
   (service defaults to `CROO_TARGET_SERVICE_ID`).
 - Unit tests: full lifecycle, multi-poll wait, rejection, timeout (fake client).
 - 🟡 Code + tests green. Live proof (real on-chain tx) pending a funded wallet
-  and a target `serviceId`.
+  and a target `serviceId`. Wallet funded: AA wallet holds ~1.9 USDC on Base.
+
+### Phase 3
+
+- Package: `@maestro/registry` — curated, validated roster of hireable agents.
+  - `agentEntrySchema` (zod): id, serviceId, category, capabilities, price,
+    `source` (third-party | in-house), `enabled`.
+  - `Registry.load()` with `hireable()`, `get()`, `byCapability()`,
+    `byCategory()`, `bySource()`, `capabilities()`; dup id/serviceId guards.
+  - Seeded with real store agents (`enabled: false` until a serviceId is wired,
+    so nothing is hireable — and thus billable — until we choose).
+- Command: `pnpm registry:verify` (static, $0) · `--live` probes serviceIds via
+  free negotiations.
+- Unit tests: schema defaults, dup id/serviceId, enabled-without-serviceId, and
+  all query helpers.
