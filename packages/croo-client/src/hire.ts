@@ -5,6 +5,7 @@ import {
   type AgentClient,
   type Delivery,
   type Order,
+  type PayOrderResult,
 } from '@croo-network/sdk';
 
 /** Raised for any expected failure in the hire lifecycle (rejection, expiry,
@@ -80,10 +81,12 @@ export async function hire(
   const pollIntervalMs = options.pollIntervalMs ?? 2_500;
   const start = Date.now();
 
-  // 1. Negotiate.
+  // 1. Negotiate. CROO requires `requirements` to be valid JSON, so plain text
+  // is wrapped as {"text": "…"}; pre-formed JSON (e.g. a schema payload) passes
+  // through untouched.
   const negotiation = await client.negotiateOrder({
     serviceId: req.serviceId,
-    requirements: req.requirements,
+    requirements: toJsonRequirements(req.requirements),
     metadata: req.metadata,
   });
   const negotiationId = negotiation.negotiationId;
@@ -101,7 +104,7 @@ export async function hire(
   const orderId = createdOrder.orderId;
 
   // 3. Pay — locks USDC into escrow (SDK auto-handles the ERC-20 approve).
-  const payResult = await client.payOrder(orderId);
+  const payResult = await payWithRetry(client, orderId, pollIntervalMs);
 
   // 4. Wait for delivery.
   const { order, delivery } = await pollForDelivery(
@@ -129,6 +132,39 @@ export async function hire(
   };
 }
 
+/**
+ * Pay an order, tolerating transient network failures. Before each retry it
+ * re-reads the order: if the status already moved past `created`, the payment
+ * actually went through despite the error — so we return it instead of paying
+ * twice.
+ */
+async function payWithRetry(
+  client: AgentClient,
+  orderId: string,
+  intervalMs: number,
+  attempts = 3,
+): Promise<PayOrderResult> {
+  let lastError: unknown;
+  for (let i = 0; i < attempts; i += 1) {
+    try {
+      return await client.payOrder(orderId);
+    } catch (err) {
+      lastError = err;
+      const order = await client.getOrder(orderId).catch(() => null);
+      if (order && order.status !== OrderStatus.Created) {
+        return { order, txHash: order.payTxHash };
+      }
+      if (i < attempts - 1) await sleep(intervalMs);
+    }
+  }
+  throw new HireError(
+    `Payment failed after ${attempts} attempts: ${
+      lastError instanceof Error ? lastError.message : String(lastError)
+    }`,
+    { orderId },
+  );
+}
+
 /** Poll until the requester-side order for a negotiation exists. */
 async function pollForOrder(
   client: AgentClient,
@@ -153,7 +189,17 @@ async function pollForOrder(
 
     const orders = await client.listOrders({ role: 'buyer', pageSize: 50 });
     const order = orders.find((o) => o.negotiationId === negotiationId);
-    if (order) return order;
+    if (order) {
+      if (order.status === OrderStatus.CreateFailed) {
+        throw new HireError('On-chain order creation failed', {
+          negotiationId,
+          orderId: order.orderId,
+        });
+      }
+      // Only return once the order is actually payable; 'creating' means the
+      // on-chain createOrder tx is still in flight and payOrder would 400.
+      if (order.status !== OrderStatus.Creating) return order;
+    }
 
     if (Date.now() >= deadline) {
       throw new HireError(`Timed out after ${timeoutMs}ms waiting for order creation`, {
@@ -206,6 +252,18 @@ async function tryGetDelivery(client: AgentClient, orderId: string): Promise<Del
   } catch (err) {
     if (isNotFound(err)) return null; // not submitted yet
     throw err;
+  }
+}
+
+/** Ensure requirements is valid JSON (CROO rejects non-JSON). Wrap plain text
+ * as {"text": "…"}; leave existing JSON untouched. */
+export function toJsonRequirements(requirements: string | undefined): string {
+  if (!requirements) return '{}';
+  try {
+    JSON.parse(requirements);
+    return requirements;
+  } catch {
+    return JSON.stringify({ text: requirements });
   }
 }
 

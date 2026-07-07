@@ -6,11 +6,11 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 | --- | -------------------------------------------------- | -------------------------------------------------- | ------- |
 | 0   | Foundation (monorepo, tooling, `config`, `logger`) | `pnpm check` all green                             | ✅      |
 | 1   | `croo-client` (typed SDK wrapper, WS, events)      | `pnpm croo:ping` prints wallet + USDC balance      | ✅      |
-| 2   | First real A2A hire                                | `pnpm croo:hire` returns result + on-chain txHash  | 🟡 code |
+| 2   | First real A2A hire                                | `pnpm croo:hire` returns result + on-chain txHash  | ✅ LIVE |
 | 3   | `registry` (curated agent roster)                  | `pnpm registry:verify` validates roster            | ✅      |
 | 4   | `planner` (goal → plan; rule + Grok/LLM)           | `pnpm plan "<goal>"` valid plan                    | ✅      |
 | 5   | `orchestrator` + `receipts`                        | `pnpm run:goal "<goal>"` answer + receipt trail    | ✅      |
-| 6   | Provider (in-house worker Maestro hires)           | `pnpm worker` accepts + delivers; Maestro hires it | 🟡 code |
+| 6   | Provider (in-house worker Maestro hires)           | `pnpm worker` accepts + delivers; Maestro hires it | ✅ LIVE |
 | 7   | Demo surface (CLI / dashboard)                     | recorded ≤5-min run                                | ⬜      |
 | 8   | Package & submit                                   | submission checklist green                         | ⬜      |
 
@@ -110,5 +110,15 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
   makes the worker genuinely useful; `echoHandler` for offline/tests.
 - config: `WORKER_SDK_KEY`. Command: `pnpm worker` runs the worker agent.
 - Unit tests: auto-accept + deliver-on-payment (fake client/stream).
-- 🟡 Code + tests green. Live proof pending: register a worker agent on the
-  dashboard, fund it, run `pnpm worker`, then `pnpm run:goal --live`.
+- ✅ **LIVE:** Maestro hired Scout (in-house worker) end-to-end on Base:
+  - pay tx `0xaa254b76…21ea9` · deliver tx `0x424e87e0…166432` · clear tx
+    `0x735a1b2c…a5c6056`
+  - Scout delivered a real Groq-generated brief; price 0.01 + fee 0.01 USDC.
+  - Requester `0xEc51…D319` (Maestro agent wallet) → provider `0xC232…46bD`.
+- Integration notes learned & handled:
+  - `requirements` must be valid JSON → `toJsonRequirements` wraps text as
+    `{"text":…}`; worker `extractTask` unwraps it.
+  - `payOrder` only valid at status `created` (not `creating`) → poll waits.
+  - Each agent pays gas from its **own** wallet via an ERC-20 paymaster, so both
+    Maestro and the worker need a small USDC balance.
+  - `payWithRetry` tolerates transient network errors without double-paying.

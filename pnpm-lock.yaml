@@ -115,6 +115,10 @@ importers:
       '@maestro/planner':
         specifier: workspace:*
         version: link:../planner
+    devDependencies:
+      '@maestro/config':
+        specifier: workspace:*
+        version: link:../config
 
   packages/receipts: {}
 

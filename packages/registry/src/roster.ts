@@ -68,4 +68,18 @@ export const defaultRoster: AgentEntryInput[] = [
     source: 'third-party',
     enabled: false,
   },
+  {
+    // Maestro's in-house worker (Phase 6) — the reliable, LLM-backed agent
+    // Maestro hires. Live-verified: real on-chain A2A order settled on Base.
+    id: 'scout',
+    name: 'Scout',
+    category: 'research-report',
+    description: 'In-house analyst: answers an analysis question about a wallet, token, or topic.',
+    capabilities: ['research', 'analysis', 'wallet-analysis', 'trust', 'summary', 'brief'],
+    inputHint: 'A free-text question or topic to analyse.',
+    serviceId: '8b6f9833-09e7-4081-bda4-25932e3ba080',
+    priceUsdc: 0.01,
+    source: 'in-house',
+    enabled: true,
+  },
 ];
