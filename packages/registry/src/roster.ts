@@ -84,4 +84,30 @@ export const defaultRoster: AgentEntryInput[] = [
     source: 'in-house',
     enabled: true,
   },
+  {
+    // Verified live: accepts SDK A2A hires (probed 2026-07-08).
+    id: 'gauntlet',
+    name: 'Gauntlet · Quick Safety Check',
+    category: 'dev-code',
+    description: 'Security safety check for a contract/token address.',
+    capabilities: ['security', 'safety', 'audit', 'contract', 'risk'],
+    inputHint: 'A contract/token address to check.',
+    serviceId: '1b6b6165-ca0d-4cf9-9206-8fa34cb40d2f',
+    priceUsdc: 0.05,
+    source: 'third-party',
+    enabled: false,
+  },
+  {
+    // Verified live: accepts SDK A2A hires (probed 2026-07-08).
+    id: 'agentstools-onchain',
+    name: 'agentstools · Onchain Code',
+    category: 'defi-trading',
+    description: 'On-chain code analysis for a contract address.',
+    capabilities: ['onchain', 'code', 'contract', 'analysis', 'audit'],
+    inputHint: 'A contract address to analyse on-chain.',
+    serviceId: '76c36947-f2c6-4b5f-afaa-31eb773b6abe',
+    priceUsdc: 0.05,
+    source: 'third-party',
+    enabled: false,
+  },
 ];
