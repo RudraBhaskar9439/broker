@@ -3,10 +3,12 @@ import { llmPlanSchema, type Plan, type PlanStep, type Planner } from './types';
 import { createChat, extractJson, type ChatFn, type LlmConfig } from './llm';
 
 const SYSTEM_PROMPT = `You are Maestro's planner. You are given a user goal and a catalogue of
-callable agents. Choose the minimal set of agents that together accomplish the goal, decide what
-to send each as "requirements", and express ordering via "dependsOn" (list the agentIds whose
-output is needed first). Only use agentIds from the catalogue. Respond with strict JSON:
-{"steps":[{"agentId","requirements","dependsOn":[],"reason"}]}`;
+callable agents. Break the goal into a sequence of focused steps, each hiring one agent for a
+specific sub-task. You MAY hire the same agent multiple times for different sub-tasks. Prefer
+2-4 steps for a non-trivial goal so later steps can build on earlier findings. Express ordering
+with "dependsOn": a list of step numbers (1-based, referring to EARLIER steps in your list) whose
+output this step needs. Only use agentIds from the catalogue. Respond with strict JSON:
+{"steps":[{"agentId","requirements","dependsOn":[<step numbers>],"reason"}]}`;
 
 function catalogue(agents: AgentEntry[]): string {
   return agents
@@ -37,24 +39,27 @@ export class LlmPlanner implements Planner {
     const parsed = llmPlanSchema.parse(extractJson(raw));
 
     const byId = new Map(agents.map((a) => [a.id, a]));
-    const valid = parsed.steps.filter((s) => byId.has(s.agentId));
+    // Keep hireable steps with their original index so 1-based dependsOn numbers
+    // still resolve after hallucinated steps are dropped.
+    const kept = parsed.steps
+      .map((step, origIndex) => ({ step, origIndex }))
+      .filter(({ step }) => byId.has(step.agentId));
 
-    // Assign step ids and map agentId dependencies onto them.
-    const stepIdByAgent = new Map<string, string>();
-    valid.forEach((s, i) => stepIdByAgent.set(s.agentId, `s${i + 1}`));
+    const finalIdByOrigIndex = new Map<number, string>();
+    kept.forEach(({ origIndex }, i) => finalIdByOrigIndex.set(origIndex, `s${i + 1}`));
 
-    const steps: PlanStep[] = valid.map((s, i) => {
-      const agent = byId.get(s.agentId)!;
-      const dependsOn = s.dependsOn
-        .map((dep) => stepIdByAgent.get(dep))
-        .filter((id): id is string => Boolean(id));
+    const steps: PlanStep[] = kept.map(({ step }, i) => {
+      const agent = byId.get(step.agentId)!;
+      const dependsOn = step.dependsOn
+        .map((n) => finalIdByOrigIndex.get(n - 1)) // 1-based → original index
+        .filter((id): id is string => Boolean(id) && id !== `s${i + 1}`); // no self-deps
       return {
         id: `s${i + 1}`,
-        agentId: s.agentId,
+        agentId: step.agentId,
         serviceId: agent.serviceId,
-        requirements: s.requirements,
+        requirements: step.requirements,
         dependsOn,
-        reason: s.reason || 'selected by planner',
+        reason: step.reason || 'selected by planner',
       };
     });
 

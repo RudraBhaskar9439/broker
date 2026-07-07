@@ -79,7 +79,7 @@ describe('LlmPlanner', () => {
     async () =>
       JSON.stringify(json);
 
-  it('builds steps from LLM output and remaps agentId deps to step ids', async () => {
+  it('builds steps from LLM output and remaps 1-based deps to step ids', async () => {
     const chat = fakeChat({
       steps: [
         {
@@ -88,12 +88,7 @@ describe('LlmPlanner', () => {
           dependsOn: [],
           reason: 'data',
         },
-        {
-          agentId: 'veris',
-          requirements: 'verify it',
-          dependsOn: ['polymarket-wallet'],
-          reason: 'trust',
-        },
+        { agentId: 'veris', requirements: 'verify it', dependsOn: [1], reason: 'trust' },
       ],
     });
     const plan = await new LlmPlanner(
@@ -102,8 +97,24 @@ describe('LlmPlanner', () => {
     ).plan('copy-trade check', registry);
     expect(plan.strategy).toBe('llm');
     expect(plan.steps.map((s) => s.agentId)).toEqual(['polymarket-wallet', 'veris']);
-    expect(plan.steps[1]?.dependsOn).toEqual(['s1']); // remapped from agentId
+    expect(plan.steps[1]?.dependsOn).toEqual(['s1']); // step 1 → s1
     expect(plan.steps[0]?.serviceId).toBe('svc_poly');
+  });
+
+  it('supports hiring the same agent for multiple sub-tasks', async () => {
+    const chat = fakeChat({
+      steps: [
+        { agentId: 'veris', requirements: 'sub-task A', dependsOn: [], reason: 'a' },
+        { agentId: 'veris', requirements: 'sub-task B', dependsOn: [1], reason: 'b' },
+      ],
+    });
+    const plan = await new LlmPlanner(
+      { apiKey: 'x', baseUrl: 'http://x', model: 'grok' },
+      chat,
+    ).plan('two-part analysis', registry);
+    expect(plan.steps.map((s) => s.id)).toEqual(['s1', 's2']);
+    expect(plan.steps.map((s) => s.agentId)).toEqual(['veris', 'veris']);
+    expect(plan.steps[1]?.dependsOn).toEqual(['s1']);
   });
 
   it('drops hallucinated agents not in the registry', async () => {

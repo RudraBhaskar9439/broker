@@ -96,6 +96,12 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 - Unit tests: graph aggregation/format; orchestration order-graph, context
   passing, concurrency, failure resilience, events, cycle detection (8 tests).
 - Live (dry-run): Grok plan → DAG orchestrated → order graph + composed result.
+- ✅ **LIVE (real hires):** `pnpm run:goal --llm --live` — Maestro decomposed one
+  goal into a multi-step plan and hired Scout **4× on-chain**, chaining each
+  result into the next, producing a composed Go/No-Go verdict. 5 real CAP orders
+  settled on Base so far.
+- Planner enhancement: LLM may hire the same agent for multiple sub-tasks;
+  `dependsOn` uses 1-based step numbers (robust to dropped hallucinated steps).
 
 ### Phase 6
 

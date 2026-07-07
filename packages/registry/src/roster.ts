@@ -32,7 +32,9 @@ export const defaultRoster: AgentEntryInput[] = [
     serviceId: '022c38ad-0be9-4ee1-8f76-d645cb182010',
     priceUsdc: 0.1,
     source: 'third-party',
-    enabled: true,
+    // Real serviceId, but this provider does not reliably auto-accept SDK
+    // (A2A) negotiations, so it is left disabled for live runs.
+    enabled: false,
   },
   {
     id: 'hyperliquid-vault',

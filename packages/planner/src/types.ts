@@ -30,15 +30,15 @@ export interface Planner {
   plan(goal: string, registry: Registry): Promise<Plan>;
 }
 
-/** Schema for the LLM's raw JSON output. Dependencies are expressed by
- * `agentId`; the planner remaps them to step ids. */
+/** Schema for the LLM's raw JSON output. Dependencies are expressed as 1-based
+ * step numbers; the planner remaps them to step ids. */
 export const llmPlanSchema = z.object({
   steps: z
     .array(
       z.object({
         agentId: z.string().min(1),
         requirements: z.string().min(1),
-        dependsOn: z.array(z.string()).default([]),
+        dependsOn: z.array(z.coerce.number().int().positive()).default([]),
         reason: z.string().default(''),
       }),
     )
