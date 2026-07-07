@@ -11,6 +11,11 @@ export const configSchema = z.object({
   crooApiUrl: z.string().url(),
   crooWsUrl: z.string().url(),
   crooSdkKey: z.string().min(1),
+  /** Maestro's AA wallet address on Base (shown in the CROO dashboard). */
+  walletAddress: z
+    .string()
+    .regex(/^0x[a-fA-F0-9]{40}$/, 'must be a 0x-prefixed 20-byte address')
+    .optional(),
   baseRpcUrl: z.string().url().optional(),
   anthropicApiKey: z.string().min(1).optional(),
   logLevel: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
@@ -24,6 +29,7 @@ function fromEnv(env: NodeJS.ProcessEnv): Record<string, unknown> {
     crooApiUrl: env.CROO_API_URL,
     crooWsUrl: env.CROO_WS_URL,
     crooSdkKey: env.CROO_SDK_KEY,
+    walletAddress: env.MAESTRO_WALLET_ADDRESS,
     baseRpcUrl: env.BASE_RPC_URL,
     anthropicApiKey: env.ANTHROPIC_API_KEY,
     logLevel: env.LOG_LEVEL,
