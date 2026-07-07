@@ -69,6 +69,15 @@ importers:
         specifier: ^9.5.0
         version: 9.14.0
 
+  packages/planner:
+    dependencies:
+      '@maestro/registry':
+        specifier: workspace:*
+        version: link:../registry
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+
   packages/registry:
     dependencies:
       zod:

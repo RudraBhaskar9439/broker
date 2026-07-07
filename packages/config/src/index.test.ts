@@ -13,7 +13,20 @@ describe('loadConfig', () => {
     expect(cfg.crooSdkKey).toBe('croo_sk_test_key');
     expect(cfg.crooApiUrl).toBe('https://api.croo.network');
     expect(cfg.logLevel).toBe('info');
-    expect(cfg.anthropicApiKey).toBeUndefined();
+    expect(cfg.llmApiKey).toBeUndefined();
+    expect(cfg.llmBaseUrl).toBe('https://api.x.ai/v1');
+    expect(cfg.llmModel).toBe('grok-3');
+  });
+
+  it('honours explicit LLM settings', () => {
+    const cfg = loadConfig({
+      ...validEnv,
+      LLM_API_KEY: 'xai-abc',
+      LLM_BASE_URL: 'https://api.x.ai/v1',
+      LLM_MODEL: 'grok-4',
+    });
+    expect(cfg.llmApiKey).toBe('xai-abc');
+    expect(cfg.llmModel).toBe('grok-4');
   });
 
   it('honours an explicit logLevel', () => {

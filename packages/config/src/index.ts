@@ -17,7 +17,11 @@ export const configSchema = z.object({
     .regex(/^0x[a-fA-F0-9]{40}$/, 'must be a 0x-prefixed 20-byte address')
     .optional(),
   baseRpcUrl: z.string().url().optional(),
-  anthropicApiKey: z.string().min(1).optional(),
+  /** LLM planner (OpenAI-compatible endpoint — e.g. xAI/Grok). Optional: the
+   * rule-based planner needs none of these. */
+  llmApiKey: z.string().min(1).optional(),
+  llmBaseUrl: z.string().url().default('https://api.x.ai/v1'),
+  llmModel: z.string().min(1).default('grok-3'),
   logLevel: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });
 
@@ -31,7 +35,9 @@ function fromEnv(env: NodeJS.ProcessEnv): Record<string, unknown> {
     crooSdkKey: env.CROO_SDK_KEY,
     walletAddress: env.MAESTRO_WALLET_ADDRESS,
     baseRpcUrl: env.BASE_RPC_URL,
-    anthropicApiKey: env.ANTHROPIC_API_KEY,
+    llmApiKey: env.LLM_API_KEY,
+    llmBaseUrl: env.LLM_BASE_URL,
+    llmModel: env.LLM_MODEL,
     logLevel: env.LOG_LEVEL,
   };
 }

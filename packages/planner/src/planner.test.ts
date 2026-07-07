@@ -1,0 +1,122 @@
+import { describe, it, expect } from 'vitest';
+import { Registry, type AgentEntryInput } from '@maestro/registry';
+import { RulePlanner } from './rule-planner';
+import { LlmPlanner } from './llm-planner';
+import type { ChatFn } from './llm';
+
+const roster: AgentEntryInput[] = [
+  {
+    id: 'polymarket-wallet',
+    name: 'Polymarket Smart Wallet Tracker',
+    category: 'data-analytics',
+    description: 'Analyses a Polymarket wallet',
+    capabilities: ['polymarket', 'wallet-analysis'],
+    inputHint: 'a wallet address',
+    serviceId: 'svc_poly',
+    enabled: true,
+  },
+  {
+    id: 'veris',
+    name: 'VERIS',
+    category: 'research-report',
+    description: 'Due diligence and trust checks',
+    capabilities: ['due-diligence', 'trust'],
+    inputHint: 'a project name',
+    serviceId: 'svc_veris',
+    enabled: true,
+  },
+  {
+    id: 'swapgod',
+    name: 'SwapGod',
+    category: 'defi-trading',
+    description: 'Executes token swaps',
+    capabilities: ['swap', 'execution'],
+    inputHint: 'a swap intent',
+    serviceId: 'svc_swap',
+    enabled: true,
+  },
+];
+
+const registry = Registry.load(roster);
+
+describe('RulePlanner', () => {
+  it('selects agents whose capabilities match the goal', async () => {
+    const plan = await new RulePlanner().plan(
+      'analyse this polymarket wallet and run due diligence',
+      registry,
+    );
+    const ids = plan.steps.map((s) => s.agentId);
+    expect(ids).toContain('polymarket-wallet');
+    expect(ids).toContain('veris');
+    expect(ids).not.toContain('swapgod');
+    expect(plan.strategy).toBe('rule');
+    expect(plan.estCostUsdc).toBeCloseTo(0.2);
+  });
+
+  it('resolves serviceIds and produces stable step ids', async () => {
+    const plan = await new RulePlanner().plan('polymarket wallet', registry);
+    expect(plan.steps[0]?.id).toBe('s1');
+    expect(plan.steps[0]?.serviceId).toBe('svc_poly');
+  });
+
+  it('returns an empty plan when nothing matches', async () => {
+    const plan = await new RulePlanner().plan('bake a cake', registry);
+    expect(plan.steps).toHaveLength(0);
+  });
+
+  it('honours maxAgents', async () => {
+    const plan = await new RulePlanner({ maxAgents: 1 }).plan(
+      'polymarket wallet due-diligence swap',
+      registry,
+    );
+    expect(plan.steps).toHaveLength(1);
+  });
+});
+
+describe('LlmPlanner', () => {
+  const fakeChat =
+    (json: unknown): ChatFn =>
+    async () =>
+      JSON.stringify(json);
+
+  it('builds steps from LLM output and remaps agentId deps to step ids', async () => {
+    const chat = fakeChat({
+      steps: [
+        {
+          agentId: 'polymarket-wallet',
+          requirements: 'wallet 0xabc',
+          dependsOn: [],
+          reason: 'data',
+        },
+        {
+          agentId: 'veris',
+          requirements: 'verify it',
+          dependsOn: ['polymarket-wallet'],
+          reason: 'trust',
+        },
+      ],
+    });
+    const plan = await new LlmPlanner(
+      { apiKey: 'x', baseUrl: 'http://x', model: 'grok' },
+      chat,
+    ).plan('copy-trade check', registry);
+    expect(plan.strategy).toBe('llm');
+    expect(plan.steps.map((s) => s.agentId)).toEqual(['polymarket-wallet', 'veris']);
+    expect(plan.steps[1]?.dependsOn).toEqual(['s1']); // remapped from agentId
+    expect(plan.steps[0]?.serviceId).toBe('svc_poly');
+  });
+
+  it('drops hallucinated agents not in the registry', async () => {
+    const chat = fakeChat({
+      steps: [
+        { agentId: 'does-not-exist', requirements: 'x', dependsOn: [], reason: '' },
+        { agentId: 'swapgod', requirements: 'swap', dependsOn: [], reason: '' },
+      ],
+    });
+    const plan = await new LlmPlanner(
+      { apiKey: 'x', baseUrl: 'http://x', model: 'grok' },
+      chat,
+    ).plan('swap', registry);
+    expect(plan.steps.map((s) => s.agentId)).toEqual(['swapgod']);
+  });
+});

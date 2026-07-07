@@ -8,7 +8,7 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 | 1   | `croo-client` (typed SDK wrapper, WS, events)      | `pnpm croo:ping` prints wallet + USDC balance     | ✅      |
 | 2   | First real A2A hire                                | `pnpm croo:hire` returns result + on-chain txHash | 🟡 code |
 | 3   | `registry` (curated agent roster)                  | `pnpm registry:verify` validates roster           | ✅      |
-| 4   | `planner` (Claude goal → plan)                     | `pnpm plan "<goal>"` valid plan                   | ⬜      |
+| 4   | `planner` (goal → plan; rule + Grok/LLM)           | `pnpm plan "<goal>"` valid plan                   | ✅      |
 | 5   | `orchestrator` + `receipts`                        | `pnpm run:goal "<goal>"` answer + receipt trail   | ⬜      |
 | 6   | Maestro provider + in-house specialists            | external requester hires Maestro                  | ⬜      |
 | 7   | Demo surface (CLI / dashboard)                     | recorded ≤5-min run                               | ⬜      |
@@ -61,3 +61,19 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
   free negotiations.
 - Unit tests: schema defaults, dup id/serviceId, enabled-without-serviceId, and
   all query helpers.
+
+### Phase 4
+
+- Package: `@maestro/planner` — pluggable goal → plan.
+  - `RulePlanner` (default, $0): deterministic capability/keyword matching →
+    independent hire steps. Fully reproducible.
+  - `LlmPlanner`: OpenAI-compatible endpoint (xAI/Grok by default) decomposes a
+    fuzzy goal; output validated vs schema + registry (hallucinated agents
+    dropped, agentId deps remapped to step ids). Chat fn is injectable.
+  - `Plan`/`PlanStep` DAG with `dependsOn`, `estCostUsdc`.
+- config: replaced Anthropic key with generic `LLM_API_KEY` / `LLM_BASE_URL`
+  (default `https://api.x.ai/v1`) / `LLM_MODEL` (default `grok-3`).
+- Command: `pnpm plan "<goal>"` (rule) · `pnpm plan -- --llm "<goal>"` (Grok).
+  Falls back to a demo roster while no agents are wired, so it runs with $0.
+- Unit tests: rule matching/limits/empty, LLM step-building + dep remap +
+  hallucination filtering (6 tests, LLM mocked).
