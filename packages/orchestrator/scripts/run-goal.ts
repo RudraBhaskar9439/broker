@@ -129,7 +129,7 @@ async function main(): Promise<void> {
     hire,
     budgetUsdc,
     onEvent: (e) => {
-      if (e.type === 'step:start') console.log(`→ hiring ${e.agentId} …`);
+      if (e.type === 'step:start') console.log(`→ hiring ${e.agentId} ...`);
       else if (e.type === 'step:done')
         console.log(`  ✔ ${e.agentId} paid ${e.priceUsdc.toFixed(2)} USDC · ${e.payTxHash}`);
       else if (e.type === 'step:skipped') console.log(`  ⊘ ${e.agentId}: ${e.note}`);

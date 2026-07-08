@@ -18,7 +18,7 @@ export function llmHandler(config: LlmConfig, systemPrompt = DEFAULT_SYSTEM): Pr
 }
 
 /** Requirements arrive as JSON (CROO requires it). Pull out the human task from
- * common shapes ({"text"|"input"|"question"|"prompt": …}), else use as-is. */
+ * common shapes ({"text"|"input"|"question"|"prompt": ...}), else use as-is. */
 export function extractTask(requirements: string): string {
   try {
     const parsed: unknown = JSON.parse(requirements);

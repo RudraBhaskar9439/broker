@@ -76,7 +76,7 @@ async function main(): Promise<void> {
     }
   }
 
-  console.log('\n⏳ negotiating → paying → awaiting delivery …\n');
+  console.log('\n⏳ negotiating → paying → awaiting delivery ...\n');
 
   try {
     const result = await hire(

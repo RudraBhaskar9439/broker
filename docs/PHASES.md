@@ -117,13 +117,13 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 - config: `WORKER_SDK_KEY`. Command: `pnpm worker` runs the worker agent.
 - Unit tests: auto-accept + deliver-on-payment (fake client/stream).
 - ✅ **LIVE:** Broker hired Scout (in-house worker) end-to-end on Base:
-  - pay tx `0xaa254b76…21ea9` · deliver tx `0x424e87e0…166432` · clear tx
-    `0x735a1b2c…a5c6056`
+  - pay tx `0xaa254b76...21ea9` · deliver tx `0x424e87e0...166432` · clear tx
+    `0x735a1b2c...a5c6056`
   - Scout delivered a real Groq-generated brief; price 0.01 + fee 0.01 USDC.
-  - Requester `0xEc51…D319` (Broker agent wallet) → provider `0xC232…46bD`.
+  - Requester `0xEc51...D319` (Broker agent wallet) → provider `0xC232...46bD`.
 - Integration notes learned & handled:
   - `requirements` must be valid JSON → `toJsonRequirements` wraps text as
-    `{"text":…}`; worker `extractTask` unwraps it.
+    `{"text":...}`; worker `extractTask` unwraps it.
   - `payOrder` only valid at status `created` (not `creating`) → poll waits.
   - Each agent pays gas from its **own** wallet via an ERC-20 paymaster, so both
     Broker and the worker need a small USDC balance.

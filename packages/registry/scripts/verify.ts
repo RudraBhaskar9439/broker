@@ -59,7 +59,7 @@ async function main(): Promise<void> {
     logger: createLogger({ name: 'registry', level: 'warn' }),
   });
 
-  console.log('\nProbing serviceIds (free negotiations, left to expire) …');
+  console.log('\nProbing serviceIds (free negotiations, left to expire) ...');
   let reachable = 0;
   for (const agent of hireable) {
     try {

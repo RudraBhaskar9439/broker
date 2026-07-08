@@ -64,7 +64,7 @@ async function main(): Promise<void> {
       return;
     }
   } else {
-    console.log('… set BROKER_WALLET_ADDRESS in .env to display the USDC balance');
+    console.log('... set BROKER_WALLET_ADDRESS in .env to display the USDC balance');
   }
 
   console.log('\n✅ Phase 1 proof: Broker is connected to CROO.');

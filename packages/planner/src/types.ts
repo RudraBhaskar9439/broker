@@ -3,7 +3,7 @@ import type { Registry } from '@broker/registry';
 
 /** One node in the plan: hire a single agent, possibly using upstream output. */
 export interface PlanStep {
-  /** Stable step id (`s1`, `s2`, …). */
+  /** Stable step id (`s1`, `s2`, ...). */
   id: string;
   /** Registry agent id to hire. */
   agentId: string;

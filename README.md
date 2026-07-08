@@ -32,15 +32,15 @@ Broker is **both hireable and a hirer** - a full node in the agent economy, not 
 
 Broker is **online and hireable** on the CROO store. As of writing:
 
-| Agent                    | Role                         | Completed                         | Completion rate |
-| ------------------------ | ---------------------------- | --------------------------------- | --------------- |
-| **Broker** `0xEc51…D319` | orchestrator (hireable)      | 3 as provider · **27 hires made** | 100%            |
-| **Scout** `0xC232…46bD`  | in-house analyst (sub-agent) | 22                                | 100%            |
+| Agent                      | Role                         | Completed                         | Completion rate |
+| -------------------------- | ---------------------------- | --------------------------------- | --------------- |
+| **Broker** `0xEc51...D319` | orchestrator (hireable)      | 3 as provider · **27 hires made** | 100%            |
+| **Scout** `0xC232...46bD`  | in-house analyst (sub-agent) | 22                                | 100%            |
 
 **A real multi-owner order graph** - one goal, two independent agents, both settled on-chain:
 
 ```
-Goal: "Analyse the on-chain code of contract 0x8335…2913 and explain it."
+Goal: "Analyse the on-chain code of contract 0x8335...2913 and explain it."
 
 ✔ s1        agentstools · Onchain Code   0.05 USDC   ← independent owner
 ✔ s2 ← s1   scout                        0.01 USDC   ← in-house
@@ -49,8 +49,8 @@ Goal: "Analyse the on-chain code of contract 0x8335…2913 and explain it."
 
 Delivered result:
 
-> **## agentstools-onchain** → `{"is_contract": true, "code_size": 1852, "code_hash": "0xa670…", "chain": "eip155:8453"}`
-> **## scout** → _"The contract is confirmed to be a smart contract of 1852 bytes on eip155:8453; the code hash verifies integrity; next steps: retrieve the ABI, run static analysis…"_
+> **## agentstools-onchain** → `{"is_contract": true, "code_size": 1852, "code_hash": "0xa670...", "chain": "eip155:8453"}`
+> **## scout** → _"The contract is confirmed to be a smart contract of 1852 bytes on eip155:8453; the code hash verifies integrity; next steps: retrieve the ABI, run static analysis..."_
 
 On-chain proof (Base): [first pay tx](https://basescan.org/tx/0xaa254b7639c887035eea28cbb82b0fbe09488962961dc590cad3d79792b21ea9) ·
 [agentstools hire](https://basescan.org/tx/0x4f7a239b2746279c8982897a469fd52a5e78099a5d06677af313cff884f2ba9a) ·
@@ -143,7 +143,7 @@ When hired, Broker treats `payment − reserve` as a **hard budget** and hires s
 
 Built on `@croo-network/sdk@0.2.1`. What we learned and handle:
 
-1. **`requirements` must be valid JSON** - plain text is wrapped as `{"text": …}`; schema agents (e.g. `{"address": …}`) get their exact shape, produced by the planner and validated before sending.
+1. **`requirements` must be valid JSON** - plain text is wrapped as `{"text": ...}`; schema agents (e.g. `{"address": ...}`) get their exact shape, produced by the planner and validated before sending.
 2. **`payOrder` is only valid at status `created`** (not `creating`) - the poll waits for the on-chain create tx to land.
 3. **Gas is sponsored by an ERC-20 paymaster drawing USDC from each agent's own wallet** - both requester and provider need a small balance.
 4. **Safe pay-retry** - transient network errors re-read the order status first, to never double-pay.

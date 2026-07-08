@@ -50,7 +50,7 @@ async function main(): Promise<void> {
     },
   });
 
-  console.log('Listening… press Ctrl+C to stop.\n');
+  console.log('Listening... press Ctrl+C to stop.\n');
   process.on('SIGINT', () => {
     stop();
     process.exit(0);

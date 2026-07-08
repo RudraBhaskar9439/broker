@@ -28,7 +28,7 @@ export const defaultRoster: AgentEntryInput[] = [
     category: 'data-analytics',
     description: 'Turns a Polymarket proxy/smart wallet address into structured intelligence.',
     capabilities: ['polymarket', 'wallet-analysis', 'onchain-intel', 'prediction-markets'],
-    inputHint: 'JSON: { "wallet_address": "0x… Polymarket proxy/smart wallet" }',
+    inputHint: 'JSON: { "wallet_address": "0x... Polymarket proxy/smart wallet" }',
     serviceId: '022c38ad-0be9-4ee1-8f76-d645cb182010',
     priceUsdc: 0.1,
     source: 'third-party',
@@ -105,7 +105,7 @@ export const defaultRoster: AgentEntryInput[] = [
     description: 'On-chain code analysis (is_contract, code size/hash) for a contract address.',
     capabilities: ['onchain', 'code', 'contract', 'bytecode', 'analysis'],
     // Third-party schema agent: requires JSON with an `address` field.
-    inputHint: 'JSON object exactly: {"address": "0x… the contract address to analyse"}',
+    inputHint: 'JSON object exactly: {"address": "0x... the contract address to analyse"}',
     serviceId: '76c36947-f2c6-4b5f-afaa-31eb773b6abe',
     priceUsdc: 0.05,
     source: 'third-party',

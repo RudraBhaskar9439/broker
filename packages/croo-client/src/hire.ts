@@ -82,7 +82,7 @@ export async function hire(
   const start = Date.now();
 
   // 1. Negotiate. CROO requires `requirements` to be valid JSON, so plain text
-  // is wrapped as {"text": "…"}; pre-formed JSON (e.g. a schema payload) passes
+  // is wrapped as {"text": "..."}; pre-formed JSON (e.g. a schema payload) passes
   // through untouched.
   const negotiation = await client.negotiateOrder({
     serviceId: req.serviceId,
@@ -256,7 +256,7 @@ async function tryGetDelivery(client: AgentClient, orderId: string): Promise<Del
 }
 
 /** Ensure requirements is valid JSON (CROO rejects non-JSON). Wrap plain text
- * as {"text": "…"}; leave existing JSON untouched. */
+ * as {"text": "..."}; leave existing JSON untouched. */
 export function toJsonRequirements(requirements: string | undefined): string {
   if (!requirements) return '{}';
   try {
