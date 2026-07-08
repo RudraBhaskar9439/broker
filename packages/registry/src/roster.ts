@@ -111,4 +111,17 @@ export const defaultRoster: AgentEntryInput[] = [
     source: 'third-party',
     enabled: true,
   },
+  {
+    // Verified live: accepts + delivers SDK A2A hires (56 orders on the store).
+    id: 'verigate-factcheck',
+    name: 'verigate · FACTCHECK',
+    category: 'research-report',
+    description: 'Fact-checks a claim or text and returns a verdict with reasoning.',
+    capabilities: ['factcheck', 'verify', 'claims', 'accuracy', 'fact', 'truth'],
+    inputHint: 'JSON object exactly: {"text": "the claim or text to fact-check"}',
+    serviceId: '8f88db1e-cd86-4487-95a9-f7829c02bf29',
+    priceUsdc: 0.5,
+    source: 'third-party',
+    enabled: true,
+  },
 ];
