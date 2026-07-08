@@ -1,5 +1,5 @@
 {
-  "name": "@maestro/orchestrator",
+  "name": "@broker/orchestrator",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -21,14 +21,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@maestro/croo-client": "workspace:*",
-    "@maestro/planner": "workspace:*",
-    "@maestro/receipts": "workspace:*"
+    "@broker/croo-client": "workspace:*",
+    "@broker/planner": "workspace:*",
+    "@broker/receipts": "workspace:*"
   },
   "devDependencies": {
-    "@maestro/config": "workspace:*",
-    "@maestro/logger": "workspace:*",
-    "@maestro/provider": "workspace:*",
-    "@maestro/registry": "workspace:*"
+    "@broker/config": "workspace:*",
+    "@broker/logger": "workspace:*",
+    "@broker/provider": "workspace:*",
+    "@broker/registry": "workspace:*"
   }
 }

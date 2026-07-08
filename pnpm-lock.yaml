@@ -50,15 +50,15 @@ importers:
 
   packages/croo-client:
     dependencies:
+      '@broker/config':
+        specifier: workspace:*
+        version: link:../config
+      '@broker/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@croo-network/sdk':
         specifier: ^0.2.1
         version: 0.2.1
-      '@maestro/config':
-        specifier: workspace:*
-        version: link:../config
-      '@maestro/logger':
-        specifier: workspace:*
-        version: link:../logger
       ethers:
         specifier: ^6.13.0
         version: 6.17.0
@@ -71,55 +71,55 @@ importers:
 
   packages/orchestrator:
     dependencies:
-      '@maestro/croo-client':
+      '@broker/croo-client':
         specifier: workspace:*
         version: link:../croo-client
-      '@maestro/planner':
+      '@broker/planner':
         specifier: workspace:*
         version: link:../planner
-      '@maestro/receipts':
+      '@broker/receipts':
         specifier: workspace:*
         version: link:../receipts
     devDependencies:
-      '@maestro/config':
+      '@broker/config':
         specifier: workspace:*
         version: link:../config
-      '@maestro/logger':
+      '@broker/logger':
         specifier: workspace:*
         version: link:../logger
-      '@maestro/provider':
+      '@broker/provider':
         specifier: workspace:*
         version: link:../provider
-      '@maestro/registry':
+      '@broker/registry':
         specifier: workspace:*
         version: link:../registry
 
   packages/planner:
     dependencies:
-      '@maestro/registry':
+      '@broker/registry':
         specifier: workspace:*
         version: link:../registry
       zod:
         specifier: ^3.24.1
         version: 3.25.76
     devDependencies:
-      '@maestro/config':
+      '@broker/config':
         specifier: workspace:*
         version: link:../config
 
   packages/provider:
     dependencies:
-      '@maestro/croo-client':
+      '@broker/croo-client':
         specifier: workspace:*
         version: link:../croo-client
-      '@maestro/logger':
+      '@broker/logger':
         specifier: workspace:*
         version: link:../logger
-      '@maestro/planner':
+      '@broker/planner':
         specifier: workspace:*
         version: link:../planner
     devDependencies:
-      '@maestro/config':
+      '@broker/config':
         specifier: workspace:*
         version: link:../config
 
@@ -131,13 +131,13 @@ importers:
         specifier: ^3.24.1
         version: 3.25.76
     devDependencies:
-      '@maestro/config':
+      '@broker/config':
         specifier: workspace:*
         version: link:../config
-      '@maestro/croo-client':
+      '@broker/croo-client':
         specifier: workspace:*
         version: link:../croo-client
-      '@maestro/logger':
+      '@broker/logger':
         specifier: workspace:*
         version: link:../logger
 

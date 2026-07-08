@@ -21,7 +21,7 @@ async function main(): Promise<void> {
   const all = registry.all();
   const hireable = registry.hireable();
 
-  console.log('Maestro · registry');
+  console.log('Broker · registry');
   console.log('──────────────────');
   console.log(`${pad('ID', 20)} ${pad('CATEGORY', 18)} ${pad('SRC', 12)} EN  SERVICE`);
   for (const e of all) {
@@ -45,9 +45,9 @@ async function main(): Promise<void> {
     return;
   }
 
-  const { safeLoadConfig } = await import('@maestro/config');
-  const { createAgentClient } = await import('@maestro/croo-client');
-  const { createLogger } = await import('@maestro/logger');
+  const { safeLoadConfig } = await import('@broker/config');
+  const { createAgentClient } = await import('@broker/croo-client');
+  const { createLogger } = await import('@broker/logger');
 
   const parsed = safeLoadConfig();
   if (!parsed.success) {

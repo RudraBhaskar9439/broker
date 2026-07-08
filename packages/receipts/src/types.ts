@@ -17,7 +17,7 @@ export interface Receipt {
   note?: string;
 }
 
-/** The complete record of one orchestration — Maestro's proof of work. */
+/** The complete record of one orchestration — Broker's proof of work. */
 export interface OrderGraph {
   goal: string;
   startedAt: string;

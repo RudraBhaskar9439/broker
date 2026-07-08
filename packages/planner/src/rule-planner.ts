@@ -1,4 +1,4 @@
-import type { AgentEntry, Registry } from '@maestro/registry';
+import type { AgentEntry, Registry } from '@broker/registry';
 import type { Plan, PlanStep, Planner } from './types';
 
 const STOPWORDS = new Set([

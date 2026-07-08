@@ -1,18 +1,18 @@
-# Maestro — Phase Tracker
+# Broker — Phase Tracker
 
 Each phase ends at a **proof gate**: a runnable command that demonstrates the phase works.
 
-| #   | Phase                                              | Proof gate                                         | Status  |
-| --- | -------------------------------------------------- | -------------------------------------------------- | ------- |
-| 0   | Foundation (monorepo, tooling, `config`, `logger`) | `pnpm check` all green                             | ✅      |
-| 1   | `croo-client` (typed SDK wrapper, WS, events)      | `pnpm croo:ping` prints wallet + USDC balance      | ✅      |
-| 2   | First real A2A hire                                | `pnpm croo:hire` returns result + on-chain txHash  | ✅ LIVE |
-| 3   | `registry` (curated agent roster)                  | `pnpm registry:verify` validates roster            | ✅      |
-| 4   | `planner` (goal → plan; rule + Grok/LLM)           | `pnpm plan "<goal>"` valid plan                    | ✅      |
-| 5   | `orchestrator` + `receipts`                        | `pnpm run:goal "<goal>"` answer + receipt trail    | ✅      |
-| 6   | Provider (in-house worker Maestro hires)           | `pnpm worker` accepts + delivers; Maestro hires it | ✅ LIVE |
-| 7   | Demo surface + live discovery                      | `pnpm discover` + presentation page                | ✅      |
-| 8   | Package & submit                                   | submission checklist green                         | ⬜      |
+| #   | Phase                                              | Proof gate                                        | Status  |
+| --- | -------------------------------------------------- | ------------------------------------------------- | ------- |
+| 0   | Foundation (monorepo, tooling, `config`, `logger`) | `pnpm check` all green                            | ✅      |
+| 1   | `croo-client` (typed SDK wrapper, WS, events)      | `pnpm croo:ping` prints wallet + USDC balance     | ✅      |
+| 2   | First real A2A hire                                | `pnpm croo:hire` returns result + on-chain txHash | ✅ LIVE |
+| 3   | `registry` (curated agent roster)                  | `pnpm registry:verify` validates roster           | ✅      |
+| 4   | `planner` (goal → plan; rule + Grok/LLM)           | `pnpm plan "<goal>"` valid plan                   | ✅      |
+| 5   | `orchestrator` + `receipts`                        | `pnpm run:goal "<goal>"` answer + receipt trail   | ✅      |
+| 6   | Provider (in-house worker Broker hires)            | `pnpm worker` accepts + delivers; Broker hires it | ✅ LIVE |
+| 7   | Demo surface + live discovery                      | `pnpm discover` + presentation page               | ✅      |
+| 8   | Package & submit                                   | submission checklist green                        | ⬜      |
 
 ## Proof log
 
@@ -23,7 +23,7 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 
 ### Phase 1
 
-- Package: `@maestro/croo-client` — typed boundary over `@croo-network/sdk`.
+- Package: `@broker/croo-client` — typed boundary over `@croo-network/sdk`.
   - `createAgentClient(config)` — single place an SDK client is constructed.
   - `probeConnection(client)` — authenticates + opens the WebSocket stream.
   - `waitForEvent(stream, type, { match })` — event→promise primitive for the
@@ -37,7 +37,7 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 
 ### Phase 2
 
-- Adds `hire(client, { serviceId, requirements })` to `@maestro/croo-client`:
+- Adds `hire(client, { serviceId, requirements })` to `@broker/croo-client`:
   negotiate → order created → pay (USDC escrow) → delivery, returning
   `{ orderId, payTxHash, price, text, json, contentHash, elapsedMs }`.
 - Reliability is poll-based (REST status), so a dropped WebSocket event never
@@ -50,7 +50,7 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 
 ### Phase 3
 
-- Package: `@maestro/registry` — curated, validated roster of hireable agents.
+- Package: `@broker/registry` — curated, validated roster of hireable agents.
   - `agentEntrySchema` (zod): id, serviceId, category, capabilities, price,
     `source` (third-party | in-house), `enabled`.
   - `Registry.load()` with `hireable()`, `get()`, `byCapability()`,
@@ -64,7 +64,7 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 
 ### Phase 4
 
-- Package: `@maestro/planner` — pluggable goal → plan.
+- Package: `@broker/planner` — pluggable goal → plan.
   - `RulePlanner` (default, $0): deterministic capability/keyword matching →
     independent hire steps. Fully reproducible.
   - `LlmPlanner`: OpenAI-compatible endpoint (xAI/Grok by default) decomposes a
@@ -81,10 +81,10 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 
 ### Phase 5
 
-- Package: `@maestro/receipts` — `ReceiptRecorder` + `OrderGraph` (per-hire
+- Package: `@broker/receipts` — `ReceiptRecorder` + `OrderGraph` (per-hire
   receipt: agent, orderId, txHash, price, deps, latency) + `formatOrderGraph`.
-  This graph is Maestro's proof-of-work for the A2A-composability score.
-- Package: `@maestro/orchestrator` — executes a plan as a DAG:
+  This graph is Broker's proof-of-work for the A2A-composability score.
+- Package: `@broker/orchestrator` — executes a plan as a DAG:
   - topological order; independent steps run concurrently; dependent steps
     await upstream and receive their output as appended context.
   - a single step's failure is captured (not thrown) so the rest completes.
@@ -96,7 +96,7 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 - Unit tests: graph aggregation/format; orchestration order-graph, context
   passing, concurrency, failure resilience, events, cycle detection (8 tests).
 - Live (dry-run): Grok plan → DAG orchestrated → order graph + composed result.
-- ✅ **LIVE (real hires):** `pnpm run:goal --llm --live` — Maestro decomposed one
+- ✅ **LIVE (real hires):** `pnpm run:goal --llm --live` — Broker decomposed one
   goal into a multi-step plan and hired Scout **4× on-chain**, chaining each
   result into the next, producing a composed Go/No-Go verdict. 5 real CAP orders
   settled on Base so far.
@@ -107,24 +107,24 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 
 - **Finding:** third-party store agents are unreliable for programmatic A2A
   hiring — tested Polymarket (never accepts SDK negotiations), croocred
-  (rejects: provider out of gas), skeptis (rejects). So Maestro hires **our own
+  (rejects: provider out of gas), skeptis (rejects). So Broker hires **our own
   worker agents** instead: reliable, recycles USDC, still proves A2A on-chain.
 - Also learned: the store has a **public API** (`/backend/v1/public/agents/{id}`)
   exposing serviceIds — enables real discovery (no login needed).
-- Package: `@maestro/provider` — `runProvider()` auto-accepts negotiations and,
+- Package: `@broker/provider` — `runProvider()` auto-accepts negotiations and,
   on payment, delivers a result via a `ProviderHandler`. `llmHandler` (Groq)
   makes the worker genuinely useful; `echoHandler` for offline/tests.
 - config: `WORKER_SDK_KEY`. Command: `pnpm worker` runs the worker agent.
 - Unit tests: auto-accept + deliver-on-payment (fake client/stream).
-- ✅ **LIVE:** Maestro hired Scout (in-house worker) end-to-end on Base:
+- ✅ **LIVE:** Broker hired Scout (in-house worker) end-to-end on Base:
   - pay tx `0xaa254b76…21ea9` · deliver tx `0x424e87e0…166432` · clear tx
     `0x735a1b2c…a5c6056`
   - Scout delivered a real Groq-generated brief; price 0.01 + fee 0.01 USDC.
-  - Requester `0xEc51…D319` (Maestro agent wallet) → provider `0xC232…46bD`.
+  - Requester `0xEc51…D319` (Broker agent wallet) → provider `0xC232…46bD`.
 - Integration notes learned & handled:
   - `requirements` must be valid JSON → `toJsonRequirements` wraps text as
     `{"text":…}`; worker `extractTask` unwraps it.
   - `payOrder` only valid at status `created` (not `creating`) → poll waits.
   - Each agent pays gas from its **own** wallet via an ERC-20 paymaster, so both
-    Maestro and the worker need a small USDC balance.
+    Broker and the worker need a small USDC balance.
   - `payWithRetry` tolerates transient network errors without double-paying.

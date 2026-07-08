@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Registry } from '@maestro/registry';
+import type { Registry } from '@broker/registry';
 
 /** One node in the plan: hire a single agent, possibly using upstream output. */
 export interface PlanStep {

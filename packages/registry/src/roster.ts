@@ -1,7 +1,7 @@
 import type { AgentEntryInput } from './schema';
 
 /**
- * Curated roster of CROO Agent Store agents Maestro can orchestrate.
+ * Curated roster of CROO Agent Store agents Broker can orchestrate.
  *
  * Third-party entries are seeded from the live store but ship `enabled: false`
  * with an empty `serviceId` until a real service id is wired in — the planner
@@ -71,8 +71,8 @@ export const defaultRoster: AgentEntryInput[] = [
     enabled: false,
   },
   {
-    // Maestro's in-house worker (Phase 6) — the reliable, LLM-backed agent
-    // Maestro hires. Live-verified: real on-chain A2A order settled on Base.
+    // Broker's in-house worker (Phase 6) — the reliable, LLM-backed agent
+    // Broker hires. Live-verified: real on-chain A2A order settled on Base.
     id: 'scout',
     name: 'Scout',
     category: 'research-report',

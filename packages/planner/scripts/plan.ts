@@ -8,7 +8,7 @@
  * demo roster so the planner's behaviour is visible with zero spend.
  */
 import 'dotenv/config';
-import { Registry, type AgentEntryInput } from '@maestro/registry';
+import { Registry, type AgentEntryInput } from '@broker/registry';
 import { RulePlanner, LlmPlanner, type Planner } from '../src/index';
 
 const DEMO_ROSTER: AgentEntryInput[] = [
@@ -67,7 +67,7 @@ async function main(): Promise<void> {
 
   let planner: Planner;
   if (useLlm) {
-    const { safeLoadConfig } = await import('@maestro/config');
+    const { safeLoadConfig } = await import('@broker/config');
     const parsed = safeLoadConfig();
     if (!parsed.success || !parsed.data.llmApiKey) {
       console.error('✖ --llm needs LLM_API_KEY in .env (xAI/Grok key).');
@@ -85,7 +85,7 @@ async function main(): Promise<void> {
 
   const plan = await planner.plan(goal, registry);
 
-  console.log('Maestro · plan');
+  console.log('Broker · plan');
   console.log('──────────────');
   console.log(`Goal:     ${plan.goal}`);
   console.log(

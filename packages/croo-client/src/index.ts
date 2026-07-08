@@ -1,4 +1,4 @@
-// Maestro's typed boundary over @croo-network/sdk. Downstream packages import
+// Broker's typed boundary over @croo-network/sdk. Downstream packages import
 // from here, never from the raw SDK — so SDK churn is absorbed in one place.
 
 export { createAgentClient, probeConnection } from './client';

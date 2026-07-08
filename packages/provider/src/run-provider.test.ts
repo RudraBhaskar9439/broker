@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { AgentClient, Event } from '@maestro/croo-client';
+import type { AgentClient, Event } from '@broker/croo-client';
 import { runProvider } from './run-provider';
 import { echoHandler } from './handlers';
 

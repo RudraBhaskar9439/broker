@@ -1,4 +1,4 @@
-import { createChat, type ChatFn, type LlmConfig } from '@maestro/planner';
+import { createChat, type ChatFn, type LlmConfig } from '@broker/planner';
 import type { ProviderHandler } from './types';
 
 const DEFAULT_SYSTEM =

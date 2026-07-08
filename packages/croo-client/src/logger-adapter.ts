@@ -1,4 +1,4 @@
-import type { Logger as PinoLogger } from '@maestro/logger';
+import type { Logger as PinoLogger } from '@broker/logger';
 import type { Logger as SdkLogger } from '@croo-network/sdk';
 
 /**

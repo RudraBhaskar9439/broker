@@ -9,10 +9,10 @@
  * is proven without spending. --live wires the real on-chain hire.
  */
 import 'dotenv/config';
-import { Registry, discoverRegistry, type AgentEntryInput } from '@maestro/registry';
-import { RulePlanner, LlmPlanner, type Planner } from '@maestro/planner';
-import { orchestrate, makeCrooHire, type HireFn } from '@maestro/orchestrator';
-import { formatOrderGraph } from '@maestro/receipts';
+import { Registry, discoverRegistry, type AgentEntryInput } from '@broker/registry';
+import { RulePlanner, LlmPlanner, type Planner } from '@broker/planner';
+import { orchestrate, makeCrooHire, type HireFn } from '@broker/orchestrator';
+import { formatOrderGraph } from '@broker/receipts';
 
 const DEMO_ROSTER: AgentEntryInput[] = [
   {
@@ -62,7 +62,7 @@ const mockHire: HireFn = async ({ serviceId, requirements, agentId }) => {
 
 async function buildPlanner(useLlm: boolean): Promise<Planner> {
   if (!useLlm) return new RulePlanner();
-  const { safeLoadConfig } = await import('@maestro/config');
+  const { safeLoadConfig } = await import('@broker/config');
   const parsed = safeLoadConfig();
   if (!parsed.success || !parsed.data.llmApiKey) {
     throw new Error('--llm needs LLM_API_KEY in .env');
@@ -76,9 +76,9 @@ async function buildPlanner(useLlm: boolean): Promise<Planner> {
 
 async function buildHire(live: boolean): Promise<HireFn> {
   if (!live) return mockHire;
-  const { safeLoadConfig } = await import('@maestro/config');
-  const { createAgentClient } = await import('@maestro/croo-client');
-  const { createLogger } = await import('@maestro/logger');
+  const { safeLoadConfig } = await import('@broker/config');
+  const { createAgentClient } = await import('@broker/croo-client');
+  const { createLogger } = await import('@broker/logger');
   const parsed = safeLoadConfig();
   if (!parsed.success) throw new Error('--live needs a valid .env');
   const client = createAgentClient(parsed.data, {
@@ -114,9 +114,7 @@ async function main(): Promise<void> {
   const planner = await buildPlanner(useLlm);
   const hire = await buildHire(live);
 
-  console.log(
-    `Maestro · orchestrate  [planner=${planner.name}, mode=${live ? 'LIVE' : 'dry-run'}]`,
-  );
+  console.log(`Broker · orchestrate  [planner=${planner.name}, mode=${live ? 'LIVE' : 'dry-run'}]`);
   if (usingDemo) console.log('(demo roster — no real agents wired yet)');
   console.log(`Goal: ${goal}\n`);
 

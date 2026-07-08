@@ -1,7 +1,7 @@
 import { AgentClient } from '@croo-network/sdk';
 import type { Config as SdkConfig } from '@croo-network/sdk';
-import type { MaestroConfig } from '@maestro/config';
-import { createLogger, type Logger } from '@maestro/logger';
+import type { BrokerConfig } from '@broker/config';
+import { createLogger, type Logger } from '@broker/logger';
 import { toSdkLogger } from './logger-adapter';
 
 export interface CreateClientDeps {
@@ -10,11 +10,11 @@ export interface CreateClientDeps {
 }
 
 /**
- * Build a configured {@link AgentClient} from Maestro's validated config.
- * This is the single place Maestro constructs an SDK client, so wiring
+ * Build a configured {@link AgentClient} from Broker's validated config.
+ * This is the single place Broker constructs an SDK client, so wiring
  * (endpoints, logger adapter) lives in exactly one spot.
  */
-export function createAgentClient(config: MaestroConfig, deps: CreateClientDeps = {}): AgentClient {
+export function createAgentClient(config: BrokerConfig, deps: CreateClientDeps = {}): AgentClient {
   const logger = deps.logger ?? createLogger({ name: 'croo-client', level: config.logLevel });
   const sdkConfig: SdkConfig = {
     baseURL: config.crooApiUrl,
@@ -40,7 +40,7 @@ export interface ProbeResult {
  * leg fails — callers translate the error for the user.
  */
 export async function probeConnection(client: AgentClient): Promise<ProbeResult> {
-  // listOrders requires a role; 'buyer' reflects Maestro's consumer side.
+  // listOrders requires a role; 'buyer' reflects Broker's consumer side.
   const orders = await client.listOrders({ role: 'buyer', pageSize: 1 });
   const stream = await client.connectWebSocket();
   stream.close();

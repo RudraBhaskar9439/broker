@@ -19,7 +19,7 @@ export const agentSource = z.enum(['third-party', 'in-house']);
 export type AgentSource = z.infer<typeof agentSource>;
 
 /**
- * One callable agent Maestro may hire. `serviceId` is the CROO Agent Store
+ * One callable agent Broker may hire. `serviceId` is the CROO Agent Store
  * service id. Entries can be pre-registered (known agent, id not wired yet)
  * with `enabled: false`; the planner only ever considers enabled entries.
  */

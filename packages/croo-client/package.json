@@ -1,5 +1,5 @@
 {
-  "name": "@maestro/croo-client",
+  "name": "@broker/croo-client",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "@croo-network/sdk": "^0.2.1",
-    "@maestro/config": "workspace:*",
-    "@maestro/logger": "workspace:*",
+    "@broker/config": "workspace:*",
+    "@broker/logger": "workspace:*",
     "ethers": "^6.13.0"
   }
 }

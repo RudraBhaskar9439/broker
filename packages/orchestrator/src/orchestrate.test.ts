@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { Plan } from '@maestro/planner';
+import type { Plan } from '@broker/planner';
 import { orchestrate, OrchestrationError } from './orchestrate';
 import type { HireFn } from './types';
 

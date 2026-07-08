@@ -1,5 +1,5 @@
 {
-  "name": "@maestro/registry",
+  "name": "@broker/registry",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -24,8 +24,8 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@maestro/config": "workspace:*",
-    "@maestro/croo-client": "workspace:*",
-    "@maestro/logger": "workspace:*"
+    "@broker/config": "workspace:*",
+    "@broker/croo-client": "workspace:*",
+    "@broker/logger": "workspace:*"
   }
 }

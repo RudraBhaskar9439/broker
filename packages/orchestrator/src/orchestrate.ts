@@ -1,5 +1,5 @@
-import type { Plan, PlanStep } from '@maestro/planner';
-import { ReceiptRecorder, type Receipt } from '@maestro/receipts';
+import type { Plan, PlanStep } from '@broker/planner';
+import { ReceiptRecorder, type Receipt } from '@broker/receipts';
 import type { OrchestrateOptions, OrchestrationResult, StepOutput } from './types';
 
 export class OrchestrationError extends Error {

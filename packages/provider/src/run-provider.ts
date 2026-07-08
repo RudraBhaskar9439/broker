@@ -1,5 +1,5 @@
-import { EventType, DeliverableType, type AgentClient } from '@maestro/croo-client';
-import { createLogger, type Logger } from '@maestro/logger';
+import { EventType, DeliverableType, type AgentClient } from '@broker/croo-client';
+import { createLogger, type Logger } from '@broker/logger';
 import type { ProviderEvent, ProviderHandler } from './types';
 
 export interface RunProviderOptions {
@@ -15,7 +15,7 @@ export interface RunProviderOptions {
  * produce a deliverable via `handle` and submit it on-chain. Returns a stop()
  * function that closes the event stream.
  *
- * This is the reliable counterpart Maestro hires — we control acceptance and
+ * This is the reliable counterpart Broker hires — we control acceptance and
  * delivery, so hires never hang or get rejected like flaky third parties.
  */
 export async function runProvider(options: RunProviderOptions): Promise<() => void> {

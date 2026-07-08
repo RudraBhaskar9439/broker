@@ -1,5 +1,5 @@
 {
-  "name": "@maestro/provider",
+  "name": "@broker/provider",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -21,11 +21,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@maestro/croo-client": "workspace:*",
-    "@maestro/logger": "workspace:*",
-    "@maestro/planner": "workspace:*"
+    "@broker/croo-client": "workspace:*",
+    "@broker/logger": "workspace:*",
+    "@broker/planner": "workspace:*"
   },
   "devDependencies": {
-    "@maestro/config": "workspace:*"
+    "@broker/config": "workspace:*"
   }
 }

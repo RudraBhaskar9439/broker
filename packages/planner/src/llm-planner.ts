@@ -1,8 +1,8 @@
-import type { AgentEntry, Registry } from '@maestro/registry';
+import type { AgentEntry, Registry } from '@broker/registry';
 import { llmPlanSchema, type Plan, type PlanStep, type Planner } from './types';
 import { createChat, extractJson, type ChatFn, type LlmConfig } from './llm';
 
-const SYSTEM_PROMPT = `You are Maestro's planner. You are given a user goal and a catalogue of
+const SYSTEM_PROMPT = `You are Broker's planner. You are given a user goal and a catalogue of
 callable agents. Break the goal into a sequence of focused steps, each hiring one agent for a
 specific sub-task. You MAY hire the same agent multiple times for different sub-tasks. Prefer
 2-4 steps for a non-trivial goal so later steps can build on earlier findings. Express ordering

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Registry, type AgentEntryInput } from '@maestro/registry';
+import { Registry, type AgentEntryInput } from '@broker/registry';
 import { RulePlanner } from './rule-planner';
 import { LlmPlanner } from './llm-planner';
 import type { ChatFn } from './llm';

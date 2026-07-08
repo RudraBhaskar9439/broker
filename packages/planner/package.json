@@ -1,5 +1,5 @@
 {
-  "name": "@maestro/planner",
+  "name": "@broker/planner",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -21,10 +21,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@maestro/registry": "workspace:*",
+    "@broker/registry": "workspace:*",
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@maestro/config": "workspace:*"
+    "@broker/config": "workspace:*"
   }
 }

@@ -11,11 +11,11 @@ export interface CreateLoggerOptions {
 
 /**
  * Create a structured logger. JSON by default (safe everywhere); set
- * MAESTRO_PRETTY=1 in development to opt into human-friendly output.
+ * BROKER_PRETTY=1 in development to opt into human-friendly output.
  */
 export function createLogger(options: CreateLoggerOptions = {}): Logger {
   const level = options.level ?? (process.env.LOG_LEVEL as Level | undefined) ?? 'info';
-  const pretty = process.env.MAESTRO_PRETTY === '1';
+  const pretty = process.env.BROKER_PRETTY === '1';
 
   return pino({
     level,
@@ -25,4 +25,4 @@ export function createLogger(options: CreateLoggerOptions = {}): Logger {
 }
 
 /** A ready-to-use root logger for quick scripts. */
-export const logger: Logger = createLogger({ name: 'maestro' });
+export const logger: Logger = createLogger({ name: 'broker' });

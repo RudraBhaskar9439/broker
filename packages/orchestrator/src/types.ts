@@ -1,4 +1,4 @@
-import type { OrderGraph } from '@maestro/receipts';
+import type { OrderGraph } from '@broker/receipts';
 
 /** What a hire returns to the orchestrator (a thin, testable view). */
 export interface HireOutcome {
@@ -27,8 +27,8 @@ export type StepEvent =
 export interface OrchestrateOptions {
   hire: HireFn;
   /**
-   * Max total USDC Maestro may spend on sub-hires. Steps that would exceed the
-   * remaining budget are skipped (not hired), so Maestro never spends more than
+   * Max total USDC Broker may spend on sub-hires. Steps that would exceed the
+   * remaining budget are skipped (not hired), so Broker never spends more than
    * it was paid. Undefined = no cap.
    */
   budgetUsdc?: number;

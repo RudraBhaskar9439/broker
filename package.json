@@ -1,8 +1,8 @@
 {
-  "name": "maestro",
+  "name": "broker",
   "version": "0.1.0",
   "private": true,
-  "description": "Maestro — the orchestration layer for the CROO agent economy. Hires, pays and composes other CROO agents via CAP.",
+  "description": "Broker — the orchestration layer for the CROO agent economy. Hires, pays and composes other CROO agents via CAP.",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@11.8.0",
@@ -25,7 +25,7 @@
     "plan": "tsx packages/planner/scripts/plan.ts",
     "run:goal": "tsx packages/orchestrator/scripts/run-goal.ts",
     "worker": "tsx packages/provider/scripts/worker.ts",
-    "maestro": "tsx packages/orchestrator/scripts/maestro-agent.ts"
+    "broker": "tsx packages/orchestrator/scripts/broker-agent.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * Validated shape of every environment value Maestro depends on.
+ * Validated shape of every environment value Broker depends on.
  *
  * Secrets (SDK key, Anthropic key) are optional at the schema level so that
  * early phases and unit tests can load a partial config without them; the
@@ -11,10 +11,10 @@ export const configSchema = z.object({
   crooApiUrl: z.string().url(),
   crooWsUrl: z.string().url(),
   crooSdkKey: z.string().min(1),
-  /** SDK key for Maestro's in-house worker/provider agent (Phase 6). Optional:
+  /** SDK key for Broker's in-house worker/provider agent (Phase 6). Optional:
    * only the provider process needs it. */
   workerSdkKey: z.string().min(1).optional(),
-  /** Maestro's AA wallet address on Base (shown in the CROO dashboard). */
+  /** Broker's AA wallet address on Base (shown in the CROO dashboard). */
   walletAddress: z
     .string()
     .regex(/^0x[a-fA-F0-9]{40}$/, 'must be a 0x-prefixed 20-byte address')
@@ -28,7 +28,7 @@ export const configSchema = z.object({
   logLevel: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });
 
-export type MaestroConfig = z.infer<typeof configSchema>;
+export type BrokerConfig = z.infer<typeof configSchema>;
 
 /** Maps raw process env vars onto the config schema's input shape. */
 function fromEnv(env: NodeJS.ProcessEnv): Record<string, unknown> {
@@ -37,7 +37,7 @@ function fromEnv(env: NodeJS.ProcessEnv): Record<string, unknown> {
     crooWsUrl: env.CROO_WS_URL,
     crooSdkKey: env.CROO_SDK_KEY,
     workerSdkKey: env.WORKER_SDK_KEY,
-    walletAddress: env.MAESTRO_WALLET_ADDRESS,
+    walletAddress: env.BROKER_WALLET_ADDRESS,
     baseRpcUrl: env.BASE_RPC_URL,
     llmApiKey: env.LLM_API_KEY,
     llmBaseUrl: env.LLM_BASE_URL,
@@ -50,7 +50,7 @@ function fromEnv(env: NodeJS.ProcessEnv): Record<string, unknown> {
  * Load and validate configuration from the given environment.
  * Throws a {@link z.ZodError} with a readable report if anything is invalid.
  */
-export function loadConfig(env: NodeJS.ProcessEnv = process.env): MaestroConfig {
+export function loadConfig(env: NodeJS.ProcessEnv = process.env): BrokerConfig {
   return configSchema.parse(fromEnv(env));
 }
 

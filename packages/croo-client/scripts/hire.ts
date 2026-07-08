@@ -10,8 +10,8 @@
  */
 import 'dotenv/config';
 import { formatUnits } from 'ethers';
-import { safeLoadConfig } from '@maestro/config';
-import { createLogger } from '@maestro/logger';
+import { safeLoadConfig } from '@broker/config';
+import { createLogger } from '@broker/logger';
 import {
   createAgentClient,
   hire,
@@ -51,7 +51,7 @@ async function main(): Promise<void> {
 
   const args = parseArgs(process.argv.slice(2));
   const serviceId = args.service ?? process.env.CROO_TARGET_SERVICE_ID;
-  const requirements = args.req ?? 'Maestro test hire — please return your standard output.';
+  const requirements = args.req ?? 'Broker test hire — please return your standard output.';
 
   if (!serviceId) {
     fail('No service id. Pass --service <id> or set CROO_TARGET_SERVICE_ID in .env.');
@@ -62,7 +62,7 @@ async function main(): Promise<void> {
     logger: createLogger({ name: 'croo-client', level: 'warn' }),
   });
 
-  console.log('Maestro · hire');
+  console.log('Broker · hire');
   console.log('──────────────');
   console.log(`Service:      ${serviceId}`);
   console.log(`Requirements: ${requirements}`);
@@ -71,7 +71,7 @@ async function main(): Promise<void> {
     const balance = await getUsdcBalance(config.walletAddress, config.baseRpcUrl);
     console.log(`Balance:      ${balance.formatted} USDC`);
     if (balance.raw === 0n) {
-      fail('Wallet has 0 USDC. Fund MAESTRO_WALLET_ADDRESS on Base before hiring.');
+      fail('Wallet has 0 USDC. Fund BROKER_WALLET_ADDRESS on Base before hiring.');
       return;
     }
   }

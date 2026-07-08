@@ -1,15 +1,15 @@
 /**
  * Phase 1 proof gate.
  *
- * Verifies that Maestro can talk to the CROO network with the configured
+ * Verifies that Broker can talk to the CROO network with the configured
  * credentials: authenticates the SDK key, opens the WebSocket event stream,
  * and prints the agent's on-chain USDC balance on Base.
  *
  *   pnpm ping
  */
 import 'dotenv/config';
-import { safeLoadConfig } from '@maestro/config';
-import { createLogger } from '@maestro/logger';
+import { safeLoadConfig } from '@broker/config';
+import { createLogger } from '@broker/logger';
 import { createAgentClient, probeConnection, getUsdcBalance, isUnauthorized } from '../src/index';
 
 function fail(message: string): void {
@@ -28,7 +28,7 @@ async function main(): Promise<void> {
   }
   const config = parsed.data;
 
-  console.log('Maestro · CROO connection check');
+  console.log('Broker · CROO connection check');
   console.log('────────────────────────────────');
   console.log(`API:  ${config.crooApiUrl}`);
   console.log(`WS:   ${config.crooWsUrl}`);
@@ -64,10 +64,10 @@ async function main(): Promise<void> {
       return;
     }
   } else {
-    console.log('… set MAESTRO_WALLET_ADDRESS in .env to display the USDC balance');
+    console.log('… set BROKER_WALLET_ADDRESS in .env to display the USDC balance');
   }
 
-  console.log('\n✅ Phase 1 proof: Maestro is connected to CROO.');
+  console.log('\n✅ Phase 1 proof: Broker is connected to CROO.');
 }
 
 main().catch((err) => {

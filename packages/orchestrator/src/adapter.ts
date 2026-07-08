@@ -1,4 +1,4 @@
-import { hire as crooHire, type AgentClient, type HireOptions } from '@maestro/croo-client';
+import { hire as crooHire, type AgentClient, type HireOptions } from '@broker/croo-client';
 import type { HireFn, HireOutcome } from './types';
 
 const USDC_DECIMALS = 6;

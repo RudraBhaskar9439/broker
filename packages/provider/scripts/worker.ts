@@ -1,16 +1,16 @@
 /**
- * Phase 6 — run Maestro's in-house worker (provider) agent.
+ * Phase 6 — run Broker's in-house worker (provider) agent.
  *
  *   pnpm worker
  *
  * Uses WORKER_SDK_KEY. Auto-accepts negotiations and delivers LLM-generated
- * results (Groq) so Maestro can hire it reliably. Keep this running in one
+ * results (Groq) so Broker can hire it reliably. Keep this running in one
  * terminal while `pnpm run:goal --live` runs in another.
  */
 import 'dotenv/config';
-import { safeLoadConfig } from '@maestro/config';
-import { createLogger } from '@maestro/logger';
-import { createAgentClient } from '@maestro/croo-client';
+import { safeLoadConfig } from '@broker/config';
+import { createLogger } from '@broker/logger';
+import { createAgentClient } from '@broker/croo-client';
 import { runProvider, llmHandler, echoHandler } from '../src/index';
 
 async function main(): Promise<void> {
@@ -28,14 +28,14 @@ async function main(): Promise<void> {
   }
 
   const logger = createLogger({ name: 'worker', level: config.logLevel });
-  // A client authenticated as the worker agent, not Maestro.
+  // A client authenticated as the worker agent, not Broker.
   const client = createAgentClient({ ...config, crooSdkKey: config.workerSdkKey }, { logger });
 
   const handle = config.llmApiKey
     ? llmHandler({ apiKey: config.llmApiKey, baseUrl: config.llmBaseUrl, model: config.llmModel })
     : echoHandler('scout');
 
-  console.log('Maestro · worker (provider)');
+  console.log('Broker · worker (provider)');
   console.log(`handler: ${config.llmApiKey ? `LLM (${config.llmModel})` : 'echo'}`);
 
   const stop = await runProvider({
