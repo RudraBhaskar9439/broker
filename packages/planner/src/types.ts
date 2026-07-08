@@ -15,6 +15,8 @@ export interface PlanStep {
   dependsOn: string[];
   /** Why this agent was chosen. */
   reason: string;
+  /** The agent's price in USDC — used for budget-aware orchestration. */
+  priceUsdc: number;
 }
 
 export interface Plan {

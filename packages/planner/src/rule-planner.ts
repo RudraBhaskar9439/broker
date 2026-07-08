@@ -94,6 +94,7 @@ export class RulePlanner implements Planner {
       requirements: goal,
       dependsOn: [],
       reason: r.matched.length ? `matched: ${r.matched.join(', ')}` : 'keyword match',
+      priceUsdc: r.agent.priceUsdc,
     }));
 
     const estCostUsdc = ranked.reduce((sum, r) => sum + r.agent.priceUsdc, 0);

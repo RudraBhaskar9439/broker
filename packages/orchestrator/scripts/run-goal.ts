@@ -92,6 +92,8 @@ async function main(): Promise<void> {
   const useLlm = argv.includes('--llm');
   const live = argv.includes('--live');
   const useDiscover = argv.includes('--discover');
+  const budgetArg = argv.find((a) => a.startsWith('--budget='));
+  const budgetUsdc = budgetArg ? Number(budgetArg.split('=')[1]) : undefined;
   const goal = argv
     .filter((a) => !a.startsWith('--'))
     .join(' ')
@@ -126,10 +128,12 @@ async function main(): Promise<void> {
 
   const result = await orchestrate(plan, {
     hire,
+    budgetUsdc,
     onEvent: (e) => {
       if (e.type === 'step:start') console.log(`→ hiring ${e.agentId} …`);
       else if (e.type === 'step:done')
         console.log(`  ✔ ${e.agentId} paid ${e.priceUsdc.toFixed(2)} USDC · ${e.payTxHash}`);
+      else if (e.type === 'step:skipped') console.log(`  ⊘ ${e.agentId}: ${e.note}`);
       else console.log(`  ✖ ${e.agentId}: ${e.error}`);
     },
   });

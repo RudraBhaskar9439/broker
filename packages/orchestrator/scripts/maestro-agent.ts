@@ -44,14 +44,28 @@ async function main(): Promise<void> {
       })
     : new RulePlanner();
 
-  const handle: ProviderHandler = async ({ requirements }) => {
+  // Reserve for Maestro's own protocol fee + gas on the sub-hires.
+  const RESERVE_USDC = 0.05;
+
+  const handle: ProviderHandler = async ({ requirements, orderId }) => {
     const goal = extractTask(requirements);
-    logger.info({ goal }, 'orchestrating hired goal');
+    // Budget = what Maestro was paid for this order, minus a fee/gas reserve.
+    // Maestro never spends more than this on sub-agents.
+    let budgetUsdc: number | undefined;
+    try {
+      const order = await client.getOrder(orderId);
+      const paid = Number(order.price || '0') / 1e6;
+      budgetUsdc = Math.max(0, paid - RESERVE_USDC);
+    } catch {
+      budgetUsdc = undefined;
+    }
+    logger.info({ goal, budgetUsdc }, 'orchestrating hired goal');
+
     const plan = await planner.plan(goal, registry);
     if (plan.steps.length === 0) {
       return `Maestro could not find suitable sub-agents for: ${goal}`;
     }
-    const result = await orchestrate(plan, { hire });
+    const result = await orchestrate(plan, { hire, budgetUsdc });
     return result.finalText;
   };
 

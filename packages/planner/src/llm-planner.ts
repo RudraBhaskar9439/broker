@@ -66,6 +66,7 @@ export class LlmPlanner implements Planner {
         requirements: step.requirements,
         dependsOn,
         reason: step.reason || 'selected by planner',
+        priceUsdc: agent.priceUsdc,
       };
     });
 

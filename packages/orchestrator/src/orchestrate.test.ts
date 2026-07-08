@@ -3,13 +3,20 @@ import type { Plan } from '@maestro/planner';
 import { orchestrate, OrchestrationError } from './orchestrate';
 import type { HireFn } from './types';
 
-const step = (id: string, agentId: string, dependsOn: string[] = [], requirements = 'do it') => ({
+const step = (
+  id: string,
+  agentId: string,
+  dependsOn: string[] = [],
+  requirements = 'do it',
+  priceUsdc = 0.1,
+) => ({
   id,
   agentId,
   serviceId: `svc_${agentId}`,
   requirements,
   dependsOn,
   reason: '',
+  priceUsdc,
 });
 
 const plan = (steps: Plan['steps']): Plan => ({
@@ -86,6 +93,23 @@ describe('orchestrate', () => {
     const types = onEvent.mock.calls.map((c) => c[0].type);
     expect(types).toContain('step:start');
     expect(types).toContain('step:done');
+  });
+
+  it('skips steps that would exceed the budget', async () => {
+    const hired: string[] = [];
+    const trackHire: HireFn = async ({ agentId }) => {
+      hired.push(agentId);
+      return { orderId: 'o', payTxHash: '0x', priceUsdc: 0.1, text: 'ok' };
+    };
+    // three 0.10 steps, budget 0.25 → only two fit (0.20); the third is skipped.
+    const result = await orchestrate(plan([step('s1', 'a'), step('s2', 'b'), step('s3', 'c')]), {
+      hire: trackHire,
+      budgetUsdc: 0.25,
+    });
+    expect(hired).toHaveLength(2);
+    expect(result.graph.successfulOrders).toBe(2);
+    expect(result.graph.totalSpentUsdc).toBeCloseTo(0.2);
+    expect(result.graph.receipts.filter((r) => r.status === 'skipped')).toHaveLength(1);
   });
 
   it('throws on a dependency cycle', async () => {

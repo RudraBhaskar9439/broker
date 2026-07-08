@@ -6,7 +6,7 @@ export function formatOrderGraph(graph: OrderGraph): string {
   lines.push('Order graph');
   lines.push('───────────');
   for (const r of graph.receipts) {
-    const mark = r.status === 'success' ? '✔' : '✖';
+    const mark = r.status === 'success' ? '✔' : r.status === 'skipped' ? '⊘' : '✖';
     const deps = r.dependsOn.length ? ` ← ${r.dependsOn.join(', ')}` : '';
     const price = r.priceUsdc !== undefined ? `${r.priceUsdc.toFixed(2)} USDC` : '—';
     lines.push(
@@ -14,6 +14,7 @@ export function formatOrderGraph(graph: OrderGraph): string {
     );
     if (r.payTxHash) lines.push(`     tx: ${r.payTxHash}`);
     if (r.error) lines.push(`     error: ${r.error}`);
+    if (r.note) lines.push(`     note: ${r.note}`);
   }
   lines.push('───────────');
   lines.push(

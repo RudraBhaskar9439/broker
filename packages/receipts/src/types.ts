@@ -3,7 +3,8 @@ export interface Receipt {
   stepId: string;
   agentId: string;
   serviceId: string;
-  status: 'success' | 'failed';
+  /** `skipped` = not hired because it would exceed the budget. */
+  status: 'success' | 'failed' | 'skipped';
   /** Step ids whose output fed this hire (the graph edges). */
   dependsOn: string[];
   orderId?: string;
@@ -12,6 +13,8 @@ export interface Receipt {
   priceUsdc?: number;
   elapsedMs: number;
   error?: string;
+  /** Human note, e.g. why a step was skipped. */
+  note?: string;
 }
 
 /** The complete record of one orchestration — Maestro's proof of work. */

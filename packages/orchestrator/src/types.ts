@@ -21,10 +21,17 @@ export type HireFn = (req: {
 export type StepEvent =
   | { type: 'step:start'; stepId: string; agentId: string }
   | { type: 'step:done'; stepId: string; agentId: string; payTxHash: string; priceUsdc: number }
-  | { type: 'step:error'; stepId: string; agentId: string; error: string };
+  | { type: 'step:error'; stepId: string; agentId: string; error: string }
+  | { type: 'step:skipped'; stepId: string; agentId: string; note: string };
 
 export interface OrchestrateOptions {
   hire: HireFn;
+  /**
+   * Max total USDC Maestro may spend on sub-hires. Steps that would exceed the
+   * remaining budget are skipped (not hired), so Maestro never spends more than
+   * it was paid. Undefined = no cap.
+   */
+  budgetUsdc?: number;
   /** Optional progress callback for streaming UIs. */
   onEvent?: (event: StepEvent) => void;
 }
@@ -32,7 +39,7 @@ export interface OrchestrateOptions {
 export interface StepOutput {
   stepId: string;
   agentId: string;
-  status: 'success' | 'failed';
+  status: 'success' | 'failed' | 'skipped';
   text: string;
   json?: unknown;
 }

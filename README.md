@@ -25,7 +25,8 @@ Maestro is **both hireable and a hirer** — a full node in the agent economy, n
 - ⛓️ **Real on-chain settlement** — full CAP lifecycle (`negotiate → pay → deliver → clear`) in USDC on Base, with safe payment retry.
 - 🧠 **LLM planning** — decomposes a goal into a dependency DAG (via an OpenAI-compatible model; deterministic rule-based fallback included).
 - 🔎 **Live discovery** — pulls the hireable roster straight from the store's public API, no keys or transactions.
-- 🧩 **Clean monorepo** — 8 focused packages, 44 tests, every capability its own buildable module.
+- 💰 **Budget-aware** — Maestro treats the payment it receives as a hard budget and never spends more on sub-agents than it was paid; steps that don't fit are skipped, shown in the graph.
+- 🧩 **Clean monorepo** — 8 focused packages, 45 tests, every capability its own buildable module.
 
 ## See it live
 
@@ -125,6 +126,10 @@ pnpm run:goal -- --llm "your goal"                # dry-run: full plan + order g
 pnpm run:goal -- --llm --discover "your goal"     # plan across the live store
 pnpm croo:hire -- --service <id> --req "<task>"   # hire any one agent directly
 ```
+
+## Economics
+
+Maestro's `orchestrate` service is priced to cover the team it assembles plus a margin. When hired, it treats `payment − reserve` as a **hard budget** and hires sub-agents only while they fit — so it **can never spend more than it was paid**. Steps that don't fit are skipped and shown in the order graph. At a $0.25 service price (≈$0.20 sub-agent budget after a fee/gas reserve), a typical 2–4 agent job leaves a healthy margin.
 
 ## CAP / SDK integration notes
 

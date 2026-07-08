@@ -56,11 +56,43 @@ export async function orchestrate(
   const recorder = new ReceiptRecorder(plan.goal);
   const outputs: Record<string, StepOutput> = {};
   const running = new Map<string, Promise<StepOutput>>();
+  let spent = 0; // cumulative reserved/hired USDC, for budget capping
 
   const runStep = async (step: PlanStep): Promise<StepOutput> => {
     const depOutputs = await Promise.all(step.dependsOn.map((id) => running.get(id)!));
     const requirements = buildRequirements(step, depOutputs);
     const startedMs = Date.now();
+
+    // Budget cap — reserve atomically (no await between the check and `spent +=`)
+    // so concurrent steps can't collectively overspend the budget.
+    if (options.budgetUsdc !== undefined) {
+      const price = step.priceUsdc ?? 0;
+      if (spent + price > options.budgetUsdc + 1e-9) {
+        const remaining = Math.max(0, options.budgetUsdc - spent);
+        const note = `skipped: needs ${price.toFixed(2)} USDC, only ${remaining.toFixed(2)} left in budget`;
+        recorder.record({
+          stepId: step.id,
+          agentId: step.agentId,
+          serviceId: step.serviceId,
+          status: 'skipped',
+          dependsOn: step.dependsOn,
+          priceUsdc: price,
+          elapsedMs: 0,
+          note,
+        });
+        options.onEvent?.({ type: 'step:skipped', stepId: step.id, agentId: step.agentId, note });
+        const output: StepOutput = {
+          stepId: step.id,
+          agentId: step.agentId,
+          status: 'skipped',
+          text: '',
+        };
+        outputs[step.id] = output;
+        return output;
+      }
+      spent += price;
+    }
+
     options.onEvent?.({ type: 'step:start', stepId: step.id, agentId: step.agentId });
 
     try {
