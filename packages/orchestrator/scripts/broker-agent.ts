@@ -16,7 +16,7 @@ import { safeLoadConfig } from '@broker/config';
 import { createLogger } from '@broker/logger';
 import { createAgentClient } from '@broker/croo-client';
 import { Registry } from '@broker/registry';
-import { RulePlanner, LlmPlanner, type Planner } from '@broker/planner';
+import { RulePlanner, LlmPlanner, budgetToMaxSteps, type Planner } from '@broker/planner';
 import { runProvider, extractTask, type ProviderHandler } from '@broker/provider';
 import { orchestrate, makeCrooHire } from '../src/index';
 
@@ -44,24 +44,26 @@ async function main(): Promise<void> {
       })
     : new RulePlanner();
 
-  // Reserve for Broker's own protocol fee + gas on the sub-hires.
-  const RESERVE_USDC = 0.05;
+  // Keep a margin + fee/gas reserve: at least $0.05, at least 20% of the price.
+  // So Broker always profits, and the tier (price) sets how big a team it hires.
+  const reserveFor = (paid: number): number => Math.max(0.05, paid * 0.2);
 
   const handle: ProviderHandler = async ({ requirements, orderId }) => {
     const goal = extractTask(requirements);
-    // Budget = what Broker was paid for this order, minus a fee/gas reserve.
-    // Broker never spends more than this on sub-agents.
+    // Budget + depth scale with the tier the buyer paid for.
     let budgetUsdc: number | undefined;
+    let maxSteps: number | undefined;
     try {
       const order = await client.getOrder(orderId);
       const paid = Number(order.price || '0') / 1e6;
-      budgetUsdc = Math.max(0, paid - RESERVE_USDC);
+      budgetUsdc = Math.max(0, paid - reserveFor(paid));
+      maxSteps = budgetToMaxSteps(budgetUsdc);
     } catch {
       budgetUsdc = undefined;
     }
-    logger.info({ goal, budgetUsdc }, 'orchestrating hired goal');
+    logger.info({ goal, budgetUsdc, maxSteps }, 'orchestrating hired goal');
 
-    const plan = await planner.plan(goal, registry);
+    const plan = await planner.plan(goal, registry, { maxSteps });
     if (plan.steps.length === 0) {
       return `Broker could not find suitable sub-agents for: ${goal}`;
     }

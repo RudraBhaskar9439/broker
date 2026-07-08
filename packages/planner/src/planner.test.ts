@@ -2,7 +2,16 @@ import { describe, it, expect } from 'vitest';
 import { Registry, type AgentEntryInput } from '@broker/registry';
 import { RulePlanner } from './rule-planner';
 import { LlmPlanner } from './llm-planner';
+import { budgetToMaxSteps } from './types';
 import type { ChatFn } from './llm';
+
+describe('budgetToMaxSteps', () => {
+  it('scales the step target with the budget (tiers)', () => {
+    expect(budgetToMaxSteps(0.05)).toBeLessThanOrEqual(2); // Quick tier
+    expect(budgetToMaxSteps(0.25)).toBeGreaterThanOrEqual(3); // Standard tier
+    expect(budgetToMaxSteps(0.8)).toBe(10); // Pro tier (capped)
+  });
+});
 
 const roster: AgentEntryInput[] = [
   {
@@ -70,6 +79,13 @@ describe('RulePlanner', () => {
       registry,
     );
     expect(plan.steps).toHaveLength(1);
+  });
+
+  it('honours the per-call maxSteps option (tier depth)', async () => {
+    const plan = await new RulePlanner().plan('polymarket wallet due-diligence swap', registry, {
+      maxSteps: 2,
+    });
+    expect(plan.steps.length).toBeLessThanOrEqual(2);
   });
 });
 

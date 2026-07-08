@@ -1,13 +1,13 @@
 import type { AgentEntry, Registry } from '@broker/registry';
-import { llmPlanSchema, type Plan, type PlanStep, type Planner } from './types';
+import { llmPlanSchema, type Plan, type PlanOptions, type PlanStep, type Planner } from './types';
 import { createChat, extractJson, type ChatFn, type LlmConfig } from './llm';
 
-const SYSTEM_PROMPT = `You are Broker's planner. You are given a user goal and a catalogue of
-callable agents. Break the goal into a sequence of focused steps, each hiring one agent for a
-specific sub-task. You MAY hire the same agent multiple times for different sub-tasks. Prefer
-2-4 steps for a non-trivial goal so later steps can build on earlier findings. Express ordering
-with "dependsOn": a list of step numbers (1-based, referring to EARLIER steps in your list) whose
-output this step needs.
+const SYSTEM_PROMPT = `You are Broker's planner. You are given a user goal, a catalogue of callable
+agents, and a step budget. Break the goal into focused steps, each hiring one agent for a specific
+sub-task. Use MORE steps (deeper, cross-checked analysis from multiple angles) when the step budget
+is larger, and fewer when it is small. You MAY hire the same agent multiple times for different
+sub-tasks. Express ordering with "dependsOn": a list of step numbers (1-based, referring to EARLIER
+steps in your list) whose output this step needs.
 
 CRITICAL: set each step's "requirements" to EXACTLY the format that agent expects — shown after
 "input:" in the catalogue. If the input format is a JSON object (e.g. {"address": "..."}), output
@@ -38,16 +38,20 @@ export class LlmPlanner implements Planner {
     this.chat = chat ?? createChat(config);
   }
 
-  async plan(goal: string, registry: Registry): Promise<Plan> {
+  async plan(goal: string, registry: Registry, options: PlanOptions = {}): Promise<Plan> {
     const agents = registry.hireable();
-    const user = `Goal: ${goal}\n\nAvailable agents:\n${catalogue(agents)}`;
+    const maxSteps = options.maxSteps ?? 4;
+    const user =
+      `Goal: ${goal}\n\nStep budget: aim for up to ${maxSteps} step(s) ` +
+      `(fewer is fine for a simple goal).\n\nAvailable agents:\n${catalogue(agents)}`;
     const raw = await this.chat(SYSTEM_PROMPT, user);
     const parsed = llmPlanSchema.parse(extractJson(raw));
 
     const byId = new Map(agents.map((a) => [a.id, a]));
     // Keep hireable steps with their original index so 1-based dependsOn numbers
-    // still resolve after hallucinated steps are dropped.
+    // still resolve after hallucinated steps are dropped; cap at the step budget.
     const kept = parsed.steps
+      .slice(0, maxSteps)
       .map((step, origIndex) => ({ step, origIndex }))
       .filter(({ step }) => byId.has(step.agentId));
 

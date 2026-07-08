@@ -27,9 +27,20 @@ export interface Plan {
   estCostUsdc: number;
 }
 
+export interface PlanOptions {
+  /** Target upper bound on the number of steps — used to scale depth with the
+   * hire's budget/tier (a bigger budget → a deeper plan). */
+  maxSteps?: number;
+}
+
 export interface Planner {
   readonly name: 'rule' | 'llm';
-  plan(goal: string, registry: Registry): Promise<Plan>;
+  plan(goal: string, registry: Registry, options?: PlanOptions): Promise<Plan>;
+}
+
+/** Map a USDC budget to a target number of sub-tasks (the tier's depth). */
+export function budgetToMaxSteps(budgetUsdc: number): number {
+  return Math.max(1, Math.min(10, 1 + Math.round(budgetUsdc / 0.08)));
 }
 
 /** Schema for the LLM's raw JSON output. Dependencies are expressed as 1-based

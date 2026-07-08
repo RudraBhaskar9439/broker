@@ -1,5 +1,5 @@
 import type { AgentEntry, Registry } from '@broker/registry';
-import type { Plan, PlanStep, Planner } from './types';
+import type { Plan, PlanOptions, PlanStep, Planner } from './types';
 
 const STOPWORDS = new Set([
   'the',
@@ -78,14 +78,15 @@ export class RulePlanner implements Planner {
 
   constructor(private readonly options: { maxAgents?: number } = {}) {}
 
-  async plan(goal: string, registry: Registry): Promise<Plan> {
+  async plan(goal: string, registry: Registry, options: PlanOptions = {}): Promise<Plan> {
+    const maxSteps = options.maxSteps ?? this.options.maxAgents ?? 4;
     const tokens = tokenize(goal);
     const ranked = registry
       .hireable()
       .map((agent) => ({ agent, ...scoreAgent(agent, tokens) }))
       .filter((r) => r.score > 0)
       .sort((a, b) => b.score - a.score)
-      .slice(0, this.options.maxAgents ?? 4);
+      .slice(0, maxSteps);
 
     const steps: PlanStep[] = ranked.map((r, i) => ({
       id: `s${i + 1}`,

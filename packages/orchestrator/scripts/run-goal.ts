@@ -10,7 +10,7 @@
  */
 import 'dotenv/config';
 import { Registry, discoverRegistry, type AgentEntryInput } from '@broker/registry';
-import { RulePlanner, LlmPlanner, type Planner } from '@broker/planner';
+import { RulePlanner, LlmPlanner, budgetToMaxSteps, type Planner } from '@broker/planner';
 import { orchestrate, makeCrooHire, type HireFn } from '@broker/orchestrator';
 import { formatOrderGraph } from '@broker/receipts';
 
@@ -118,7 +118,8 @@ async function main(): Promise<void> {
   if (usingDemo) console.log('(demo roster — no real agents wired yet)');
   console.log(`Goal: ${goal}\n`);
 
-  const plan = await planner.plan(goal, registry);
+  const maxSteps = budgetUsdc !== undefined ? budgetToMaxSteps(budgetUsdc) : undefined;
+  const plan = await planner.plan(goal, registry, { maxSteps });
   if (plan.steps.length === 0) {
     console.log('No agents matched the goal.');
     return;

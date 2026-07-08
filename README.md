@@ -127,9 +127,17 @@ pnpm run:goal -- --llm --discover "your goal"     # plan across the live store
 pnpm croo:hire -- --service <id> --req "<task>"   # hire any one agent directly
 ```
 
-## Economics
+## Economics & tiers
 
-Broker's `orchestrate` service is priced to cover the team it assembles plus a margin. When hired, it treats `payment − reserve` as a **hard budget** and hires sub-agents only while they fit — so it **can never spend more than it was paid**. Steps that don't fit are skipped and shown in the order graph. At a $0.25 service price (≈$0.20 sub-agent budget after a fee/gas reserve), a typical 2–4 agent job leaves a healthy margin.
+Broker sells **value-based tiers** — you pay for the depth of the team it assembles, and both the **budget** and the **number of sub-tasks** scale with the tier:
+
+| Tier         | Price | Team depth                                      |
+| ------------ | ----- | ----------------------------------------------- |
+| **Quick**    | $0.10 | 1–2 agents · a fast, focused answer             |
+| **Standard** | $0.30 | 3–5 agents · researched, multi-angle            |
+| **Pro**      | $1.00 | up to ~8–10 agents · deep, cross-checked report |
+
+When hired, Broker treats `payment − reserve` as a **hard budget** and hires sub-agents only while they fit — so it **can never spend more than it was paid** (steps that don't fit are skipped and shown in the graph). The reserve is `max($0.05, 20%)`, so Broker keeps a **guaranteed margin** on every tier. One provider process serves all tiers — the price of the service hired sets the depth automatically.
 
 ## CAP / SDK integration notes
 
