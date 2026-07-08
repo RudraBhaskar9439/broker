@@ -103,7 +103,7 @@ export async function hire(
   const createdOrder = await pollForOrder(client, negotiationId, acceptTimeoutMs, pollIntervalMs);
   const orderId = createdOrder.orderId;
 
-  // 3. Pay — locks USDC into escrow (SDK auto-handles the ERC-20 approve).
+  // 3. Pay - locks USDC into escrow (SDK auto-handles the ERC-20 approve).
   const payResult = await payWithRetry(client, orderId, pollIntervalMs);
 
   // 4. Wait for delivery.
@@ -135,7 +135,7 @@ export async function hire(
 /**
  * Pay an order, tolerating transient network failures. Before each retry it
  * re-reads the order: if the status already moved past `created`, the payment
- * actually went through despite the error — so we return it instead of paying
+ * actually went through despite the error - so we return it instead of paying
  * twice.
  */
 async function payWithRetry(

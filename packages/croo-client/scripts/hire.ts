@@ -44,14 +44,14 @@ function fail(message: string): void {
 async function main(): Promise<void> {
   const parsed = safeLoadConfig();
   if (!parsed.success) {
-    fail('Configuration invalid — fill in .env first.');
+    fail('Configuration invalid - fill in .env first.');
     return;
   }
   const config = parsed.data;
 
   const args = parseArgs(process.argv.slice(2));
   const serviceId = args.service ?? process.env.CROO_TARGET_SERVICE_ID;
-  const requirements = args.req ?? 'Broker test hire — please return your standard output.';
+  const requirements = args.req ?? 'Broker test hire - please return your standard output.';
 
   if (!serviceId) {
     fail('No service id. Pass --service <id> or set CROO_TARGET_SERVICE_ID in .env.');

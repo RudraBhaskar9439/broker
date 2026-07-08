@@ -23,7 +23,7 @@ async function main(): Promise<void> {
     );
   }
   console.log('──────────────────────────────────────────');
-  console.log(`Discovered ${agents.length} hireable services — no keys, no transactions.`);
+  console.log(`Discovered ${agents.length} hireable services - no keys, no transactions.`);
 }
 
 main().catch((err) => {

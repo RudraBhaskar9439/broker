@@ -4,7 +4,7 @@ import type { ProviderHandler } from './types';
 const DEFAULT_SYSTEM =
   'You are a specialist analysis agent hired via an autonomous agent marketplace. ' +
   'Given a task, produce a concise, well-structured, useful answer (a few short paragraphs ' +
-  'or bullet points). Do not ask questions — deliver your best analysis from the input given.';
+  'or bullet points). Do not ask questions - deliver your best analysis from the input given.';
 
 /**
  * LLM-backed handler: answers the order's requirements as free text using an
@@ -31,12 +31,12 @@ export function extractTask(requirements: string): string {
       return JSON.stringify(parsed);
     }
   } catch {
-    // not JSON — fall through
+    // not JSON - fall through
   }
   return requirements;
 }
 
-/** Deterministic handler for tests/offline demos — echoes the task. */
+/** Deterministic handler for tests/offline demos - echoes the task. */
 export function echoHandler(label = 'worker'): ProviderHandler {
   return async ({ requirements, serviceId }) =>
     `[${label}:${serviceId}] processed request:\n${requirements || '(no input)'}`;

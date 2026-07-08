@@ -8,7 +8,7 @@ export function formatOrderGraph(graph: OrderGraph): string {
   for (const r of graph.receipts) {
     const mark = r.status === 'success' ? '✔' : r.status === 'skipped' ? '⊘' : '✖';
     const deps = r.dependsOn.length ? ` ← ${r.dependsOn.join(', ')}` : '';
-    const price = r.priceUsdc !== undefined ? `${r.priceUsdc.toFixed(2)} USDC` : '—';
+    const price = r.priceUsdc !== undefined ? `${r.priceUsdc.toFixed(2)} USDC` : '-';
     lines.push(
       `${mark} ${r.stepId}${deps}  ${r.agentId}  ${price}  ${(r.elapsedMs / 1000).toFixed(1)}s`,
     );

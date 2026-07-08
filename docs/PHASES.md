@@ -1,4 +1,4 @@
-# Broker — Phase Tracker
+# Broker - Phase Tracker
 
 Each phase ends at a **proof gate**: a runnable command that demonstrates the phase works.
 
@@ -23,12 +23,12 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 
 ### Phase 1
 
-- Package: `@broker/croo-client` — typed boundary over `@croo-network/sdk`.
-  - `createAgentClient(config)` — single place an SDK client is constructed.
-  - `probeConnection(client)` — authenticates + opens the WebSocket stream.
-  - `waitForEvent(stream, type, { match })` — event→promise primitive for the
+- Package: `@broker/croo-client` - typed boundary over `@croo-network/sdk`.
+  - `createAgentClient(config)` - single place an SDK client is constructed.
+  - `probeConnection(client)` - authenticates + opens the WebSocket stream.
+  - `waitForEvent(stream, type, { match })` - event→promise primitive for the
     order lifecycle (`forOrder` / `forNegotiation` predicates).
-  - `getUsdcBalance(addr)` — on-chain USDC balance on Base (via ethers).
+  - `getUsdcBalance(addr)` - on-chain USDC balance on Base (via ethers).
 - Command: `pnpm croo:ping`
 - Expected (offline): validates env and prints actionable errors if `.env` is
   missing. With a funded `.env`: authenticates the SDK key, connects the
@@ -50,13 +50,13 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 
 ### Phase 3
 
-- Package: `@broker/registry` — curated, validated roster of hireable agents.
+- Package: `@broker/registry` - curated, validated roster of hireable agents.
   - `agentEntrySchema` (zod): id, serviceId, category, capabilities, price,
     `source` (third-party | in-house), `enabled`.
   - `Registry.load()` with `hireable()`, `get()`, `byCapability()`,
     `byCategory()`, `bySource()`, `capabilities()`; dup id/serviceId guards.
   - Seeded with real store agents (`enabled: false` until a serviceId is wired,
-    so nothing is hireable — and thus billable — until we choose).
+    so nothing is hireable - and thus billable - until we choose).
 - Command: `pnpm registry:verify` (static, $0) · `--live` probes serviceIds via
   free negotiations.
 - Unit tests: schema defaults, dup id/serviceId, enabled-without-serviceId, and
@@ -64,7 +64,7 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 
 ### Phase 4
 
-- Package: `@broker/planner` — pluggable goal → plan.
+- Package: `@broker/planner` - pluggable goal → plan.
   - `RulePlanner` (default, $0): deterministic capability/keyword matching →
     independent hire steps. Fully reproducible.
   - `LlmPlanner`: OpenAI-compatible endpoint (xAI/Grok by default) decomposes a
@@ -81,10 +81,10 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 
 ### Phase 5
 
-- Package: `@broker/receipts` — `ReceiptRecorder` + `OrderGraph` (per-hire
+- Package: `@broker/receipts` - `ReceiptRecorder` + `OrderGraph` (per-hire
   receipt: agent, orderId, txHash, price, deps, latency) + `formatOrderGraph`.
   This graph is Broker's proof-of-work for the A2A-composability score.
-- Package: `@broker/orchestrator` — executes a plan as a DAG:
+- Package: `@broker/orchestrator` - executes a plan as a DAG:
   - topological order; independent steps run concurrently; dependent steps
     await upstream and receive their output as appended context.
   - a single step's failure is captured (not thrown) so the rest completes.
@@ -96,7 +96,7 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 - Unit tests: graph aggregation/format; orchestration order-graph, context
   passing, concurrency, failure resilience, events, cycle detection (8 tests).
 - Live (dry-run): Grok plan → DAG orchestrated → order graph + composed result.
-- ✅ **LIVE (real hires):** `pnpm run:goal --llm --live` — Broker decomposed one
+- ✅ **LIVE (real hires):** `pnpm run:goal --llm --live` - Broker decomposed one
   goal into a multi-step plan and hired Scout **4× on-chain**, chaining each
   result into the next, producing a composed Go/No-Go verdict. 5 real CAP orders
   settled on Base so far.
@@ -106,12 +106,12 @@ Each phase ends at a **proof gate**: a runnable command that demonstrates the ph
 ### Phase 6
 
 - **Finding:** third-party store agents are unreliable for programmatic A2A
-  hiring — tested Polymarket (never accepts SDK negotiations), croocred
+  hiring - tested Polymarket (never accepts SDK negotiations), croocred
   (rejects: provider out of gas), skeptis (rejects). So Broker hires **our own
   worker agents** instead: reliable, recycles USDC, still proves A2A on-chain.
 - Also learned: the store has a **public API** (`/backend/v1/public/agents/{id}`)
-  exposing serviceIds — enables real discovery (no login needed).
-- Package: `@broker/provider` — `runProvider()` auto-accepts negotiations and,
+  exposing serviceIds - enables real discovery (no login needed).
+- Package: `@broker/provider` - `runProvider()` auto-accepts negotiations and,
   on payment, delivers a result via a `ProviderHandler`. `llmHandler` (Groq)
   makes the worker genuinely useful; `echoHandler` for offline/tests.
 - config: `WORKER_SDK_KEY`. Command: `pnpm worker` runs the worker agent.

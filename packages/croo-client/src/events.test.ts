@@ -30,7 +30,7 @@ describe('waitForEvent', () => {
   it('ignores events that fail the predicate', async () => {
     const source = new FakeSource();
     const promise = waitForEvent(source, 'order_created', { match: forOrder('o2') });
-    source.emit('order_created', evt({ order_id: 'o1' })); // wrong order — ignored
+    source.emit('order_created', evt({ order_id: 'o1' })); // wrong order - ignored
     source.emit('order_created', evt({ order_id: 'o2' })); // match
     await expect(promise).resolves.toMatchObject({ order_id: 'o2' });
   });

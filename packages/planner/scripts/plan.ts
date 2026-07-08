@@ -89,7 +89,7 @@ async function main(): Promise<void> {
   console.log('──────────────');
   console.log(`Goal:     ${plan.goal}`);
   console.log(
-    `Strategy: ${plan.strategy}${usingDemo ? '  (demo roster — no agents wired yet)' : ''}`,
+    `Strategy: ${plan.strategy}${usingDemo ? '  (demo roster - no agents wired yet)' : ''}`,
   );
   console.log(`Est cost: ${plan.estCostUsdc.toFixed(2)} USDC · ${plan.steps.length} step(s)`);
   console.log('──────────────');

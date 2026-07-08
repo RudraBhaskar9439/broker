@@ -2,7 +2,7 @@
   "name": "broker",
   "version": "0.1.0",
   "private": true,
-  "description": "Broker — the orchestration layer for the CROO agent economy. Hires, pays and composes other CROO agents via CAP.",
+  "description": "Broker - the orchestration layer for the CROO agent economy. Hires, pays and composes other CROO agents via CAP.",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@11.8.0",

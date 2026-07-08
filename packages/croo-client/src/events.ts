@@ -1,7 +1,7 @@
 import type { Event, EventTypeName } from '@croo-network/sdk';
 
 /**
- * Minimal structural view of the SDK's EventStream — anything with an `on`
+ * Minimal structural view of the SDK's EventStream - anything with an `on`
  * subscription satisfies it, which keeps this module unit-testable without a
  * live WebSocket.
  */
@@ -12,7 +12,7 @@ export interface EventSource {
 export interface WaitForEventOptions {
   /** Reject if no matching event arrives within this many ms. Default 120s. */
   timeoutMs?: number;
-  /** Extra predicate — e.g. match only events for a specific order id. */
+  /** Extra predicate - e.g. match only events for a specific order id. */
   match?: (event: Event) => boolean;
 }
 

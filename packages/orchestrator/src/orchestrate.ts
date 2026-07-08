@@ -47,7 +47,7 @@ function buildRequirements(step: PlanStep, deps: StepOutput[]): string {
  * Execute a plan as a DAG: independent steps run concurrently, dependent steps
  * wait for and consume their upstream outputs, and every hire is recorded in
  * the order graph. A single step's failure is captured (not thrown) so the rest
- * of the plan still completes — resilience the demo depends on.
+ * of the plan still completes - resilience the demo depends on.
  */
 export async function orchestrate(
   plan: Plan,
@@ -63,7 +63,7 @@ export async function orchestrate(
     const requirements = buildRequirements(step, depOutputs);
     const startedMs = Date.now();
 
-    // Budget cap — reserve atomically (no await between the check and `spent +=`)
+    // Budget cap - reserve atomically (no await between the check and `spent +=`)
     // so concurrent steps can't collectively overspend the budget.
     if (options.budgetUsdc !== undefined) {
       const price = step.priceUsdc ?? 0;

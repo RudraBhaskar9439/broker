@@ -1,4 +1,4 @@
-/** One hire's outcome — a single edge in the A2A order graph. */
+/** One hire's outcome - a single edge in the A2A order graph. */
 export interface Receipt {
   stepId: string;
   agentId: string;
@@ -17,7 +17,7 @@ export interface Receipt {
   note?: string;
 }
 
-/** The complete record of one orchestration — Broker's proof of work. */
+/** The complete record of one orchestration - Broker's proof of work. */
 export interface OrderGraph {
   goal: string;
   startedAt: string;

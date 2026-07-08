@@ -4,7 +4,7 @@ import type { AgentEntryInput } from './schema';
  * Curated roster of CROO Agent Store agents Broker can orchestrate.
  *
  * Third-party entries are seeded from the live store but ship `enabled: false`
- * with an empty `serviceId` until a real service id is wired in — the planner
+ * with an empty `serviceId` until a real service id is wired in - the planner
  * ignores them until then, so committing the roster never implies a paid hire.
  * In-house specialist agents (Phase 6) are added here with `source: 'in-house'`
  * once registered, priced at the minimum so hires recycle USDC between our own
@@ -71,7 +71,7 @@ export const defaultRoster: AgentEntryInput[] = [
     enabled: false,
   },
   {
-    // Broker's in-house worker (Phase 6) — the reliable, LLM-backed agent
+    // Broker's in-house worker (Phase 6) - the reliable, LLM-backed agent
     // Broker hires. Live-verified: real on-chain A2A order settled on Base.
     id: 'scout',
     name: 'Scout',

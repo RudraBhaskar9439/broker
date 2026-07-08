@@ -71,7 +71,7 @@ function scoreAgent(agent: AgentEntry, tokens: Set<string>): { score: number; ma
 /**
  * Deterministic, zero-cost planner: scores each hireable agent by capability
  * and keyword overlap with the goal, then emits one independent hire step per
- * top-scoring agent. No LLM, fully reproducible — the safe default.
+ * top-scoring agent. No LLM, fully reproducible - the safe default.
  */
 export class RulePlanner implements Planner {
   readonly name = 'rule' as const;

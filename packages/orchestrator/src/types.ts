@@ -10,7 +10,7 @@ export interface HireOutcome {
   json?: unknown;
 }
 
-/** Injectable hire function — the real one wraps croo-client; tests pass a fake. */
+/** Injectable hire function - the real one wraps croo-client; tests pass a fake. */
 export type HireFn = (req: {
   serviceId: string;
   requirements: string;

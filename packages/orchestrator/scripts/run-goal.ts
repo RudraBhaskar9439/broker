@@ -115,7 +115,7 @@ async function main(): Promise<void> {
   const hire = await buildHire(live);
 
   console.log(`Broker · orchestrate  [planner=${planner.name}, mode=${live ? 'LIVE' : 'dry-run'}]`);
-  if (usingDemo) console.log('(demo roster — no real agents wired yet)');
+  if (usingDemo) console.log('(demo roster - no real agents wired yet)');
   console.log(`Goal: ${goal}\n`);
 
   const maxSteps = budgetUsdc !== undefined ? budgetToMaxSteps(budgetUsdc) : undefined;

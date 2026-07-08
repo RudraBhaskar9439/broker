@@ -20,7 +20,7 @@ function fail(message: string): void {
 async function main(): Promise<void> {
   const parsed = safeLoadConfig();
   if (!parsed.success) {
-    fail('Configuration invalid — copy .env.example → .env and fill it in:');
+    fail('Configuration invalid - copy .env.example → .env and fill it in:');
     for (const issue of parsed.error.issues) {
       console.error(`   - ${issue.path.join('.') || '(root)'}: ${issue.message}`);
     }
@@ -57,7 +57,7 @@ async function main(): Promise<void> {
       console.log(`Wallet:  ${config.walletAddress}`);
       console.log(`Balance: ${balance.formatted} USDC (Base)`);
       if (balance.raw === 0n) {
-        console.log('⚠ Balance is 0 — fund the wallet before Phase 2 (paid hires).');
+        console.log('⚠ Balance is 0 - fund the wallet before Phase 2 (paid hires).');
       }
     } catch (err) {
       fail(`Could not read USDC balance: ${err instanceof Error ? err.message : String(err)}`);

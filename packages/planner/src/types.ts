@@ -15,7 +15,7 @@ export interface PlanStep {
   dependsOn: string[];
   /** Why this agent was chosen. */
   reason: string;
-  /** The agent's price in USDC — used for budget-aware orchestration. */
+  /** The agent's price in USDC - used for budget-aware orchestration. */
   priceUsdc: number;
 }
 
@@ -28,7 +28,7 @@ export interface Plan {
 }
 
 export interface PlanOptions {
-  /** Target upper bound on the number of steps — used to scale depth with the
+  /** Target upper bound on the number of steps - used to scale depth with the
    * hire's budget/tier (a bigger budget → a deeper plan). */
   maxSteps?: number;
 }

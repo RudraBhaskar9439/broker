@@ -3,7 +3,7 @@
  *
  * Static (default, $0): validates the roster and prints a summary.
  * Live (--live): confirms each hireable agent's serviceId is reachable by
- * opening a negotiation (free — no payment) that is left to expire unpaid.
+ * opening a negotiation (free - no payment) that is left to expire unpaid.
  *
  *   pnpm registry:verify
  *   pnpm registry:verify -- --live

@@ -11,7 +11,7 @@ function usdcToNumber(base: string): number {
 
 /**
  * Real hire function: wraps croo-client's on-chain `hire()` and maps its result
- * to the orchestrator's {@link HireOutcome}. Spends real USDC — used with the
+ * to the orchestrator's {@link HireOutcome}. Spends real USDC - used with the
  * run:goal `--live` flag and the provider app.
  */
 export function makeCrooHire(client: AgentClient, options?: HireOptions): HireFn {

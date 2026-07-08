@@ -15,7 +15,7 @@ export interface RunProviderOptions {
  * produce a deliverable via `handle` and submit it on-chain. Returns a stop()
  * function that closes the event stream.
  *
- * This is the reliable counterpart Broker hires — we control acceptance and
+ * This is the reliable counterpart Broker hires - we control acceptance and
  * delivery, so hires never hang or get rejected like flaky third parties.
  */
 export async function runProvider(options: RunProviderOptions): Promise<() => void> {
@@ -69,7 +69,7 @@ export async function runProvider(options: RunProviderOptions): Promise<() => vo
     if (event.order_id) options.onEvent?.({ type: 'completed', orderId: event.order_id });
   });
 
-  log.info('provider online — listening for negotiations');
+  log.info('provider online - listening for negotiations');
   return () => stream.close();
 }
 

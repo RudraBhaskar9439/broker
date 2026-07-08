@@ -1,5 +1,5 @@
 /**
- * Phase 6 — run Broker's in-house worker (provider) agent.
+ * Phase 6 - run Broker's in-house worker (provider) agent.
  *
  *   pnpm worker
  *

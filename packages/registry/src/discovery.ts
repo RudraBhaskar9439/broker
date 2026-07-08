@@ -54,7 +54,7 @@ function slug(text: string): string {
 
 const CATEGORIES = agentCategory.options as readonly string[];
 
-/** Map one store agent's services to validated registry entries. Pure — no I/O. */
+/** Map one store agent's services to validated registry entries. Pure - no I/O. */
 export function storeAgentToEntries(agent: StoreAgent): AgentEntry[] {
   const category: AgentCategory = CATEGORIES.includes(agent.skillTagSlugs?.[0] ?? '')
     ? (agent.skillTagSlugs![0] as AgentCategory)

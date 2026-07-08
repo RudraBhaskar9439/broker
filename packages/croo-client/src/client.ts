@@ -37,7 +37,7 @@ export interface ProbeResult {
 /**
  * Verify connectivity end-to-end: an authenticated REST call (proves the SDK
  * key) plus a WebSocket handshake (proves the event stream). Throws if either
- * leg fails — callers translate the error for the user.
+ * leg fails - callers translate the error for the user.
  */
 export async function probeConnection(client: AgentClient): Promise<ProbeResult> {
   // listOrders requires a role; 'buyer' reflects Broker's consumer side.

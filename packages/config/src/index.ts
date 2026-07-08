@@ -20,7 +20,7 @@ export const configSchema = z.object({
     .regex(/^0x[a-fA-F0-9]{40}$/, 'must be a 0x-prefixed 20-byte address')
     .optional(),
   baseRpcUrl: z.string().url().optional(),
-  /** LLM planner (OpenAI-compatible endpoint — e.g. xAI/Grok). Optional: the
+  /** LLM planner (OpenAI-compatible endpoint - e.g. xAI/Grok). Optional: the
    * rule-based planner needs none of these. */
   llmApiKey: z.string().min(1).optional(),
   llmBaseUrl: z.string().url().default('https://api.x.ai/v1'),
@@ -54,7 +54,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BrokerConfig {
   return configSchema.parse(fromEnv(env));
 }
 
-/** Non-throwing variant — returns a zod SafeParseReturnType for callers that
+/** Non-throwing variant - returns a zod SafeParseReturnType for callers that
  * want to render their own error message. */
 export function safeLoadConfig(env: NodeJS.ProcessEnv = process.env) {
   return configSchema.safeParse(fromEnv(env));

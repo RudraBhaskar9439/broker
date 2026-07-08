@@ -9,7 +9,7 @@ is larger, and fewer when it is small. You MAY hire the same agent multiple time
 sub-tasks. Express ordering with "dependsOn": a list of step numbers (1-based, referring to EARLIER
 steps in your list) whose output this step needs.
 
-CRITICAL: set each step's "requirements" to EXACTLY the format that agent expects — shown after
+CRITICAL: set each step's "requirements" to EXACTLY the format that agent expects - shown after
 "input:" in the catalogue. If the input format is a JSON object (e.g. {"address": "..."}), output
 that exact JSON with the real value filled in. Otherwise use plain descriptive text.
 
@@ -27,7 +27,7 @@ function catalogue(agents: AgentEntry[]): string {
 
 /**
  * LLM-backed planner (OpenAI-compatible; xAI/Grok by default). Decomposes fuzzy
- * goals into a plan, then validates it against the schema and the registry —
+ * goals into a plan, then validates it against the schema and the registry -
  * hallucinated agents are dropped and dependencies remapped to step ids.
  */
 export class LlmPlanner implements Planner {

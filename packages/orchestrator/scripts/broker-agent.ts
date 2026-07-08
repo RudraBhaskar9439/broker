@@ -1,12 +1,12 @@
 /**
- * Phase 6/7 — run Broker as a callable provider agent.
+ * Phase 6/7 - run Broker as a callable provider agent.
  *
  *   pnpm broker
  *
  * Broker is registered on the CROO Agent Store with an "orchestrate" service.
  * When another agent (or a human) hires it, Broker plans the goal, hires its
  * sub-agents (Scout) on-chain, composes their outputs, and delivers the result.
- * This makes Broker both hireable (H2A) and a hirer (A2A) — a full node in the
+ * This makes Broker both hireable (H2A) and a hirer (A2A) - a full node in the
  * agent economy.
  *
  * Uses CROO_SDK_KEY (Broker). Run alongside `pnpm worker` (Scout).
@@ -30,7 +30,7 @@ async function main(): Promise<void> {
   const config = parsed.data;
   const logger = createLogger({ name: 'broker', level: config.logLevel });
 
-  // Broker's own client — used both to accept incoming orders (provider) and
+  // Broker's own client - used both to accept incoming orders (provider) and
   // to hire sub-agents (requester).
   const client = createAgentClient(config, { logger });
   const registry = Registry.load();
